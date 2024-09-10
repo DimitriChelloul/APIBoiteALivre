@@ -2,7 +2,7 @@
 
 namespace APIBoiteALivre.Controllers
 {
-    public class LivreControleur : ControllerBase
+    public class HistoriqueControleur : ControllerBase
     {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace APIBoiteALivre.Controllers
 {
-    public class AccesControleur : ControllerBase
+    public class UtilisateurControleur : ControllerBase
     {
     }
 }
