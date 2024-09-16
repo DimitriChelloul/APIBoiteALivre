@@ -4,15 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entites
+namespace Domain.DTO.Reponses
 {
-    public class Utilisateur
+    public class ModificationUtilisateurReponseDTO
     {
-        public int IdUtilisateur {  get; set; }
-        public int Administrateur {  get; set; }
-        public string NomUtilisateur {  get; set; }
-        public string PrenomUtilisateur {  get; set; }
-        public string PseudoUtilisateur {  get; set; }
+        public int IdUtilisateur { get; set; }
+        public int Administrateur { get; set; }
+        public string NomUtilisateur { get; set; }
+        public string PrenomUtilisateur { get; set; }
+        public string PseudoUtilisateur { get; set; }
         public string EmailUtilisateur { get; set; }
         public string MotDePasse { get; set; }
         public string Adresse1 { get; set; }

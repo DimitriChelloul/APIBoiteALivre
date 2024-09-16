@@ -27,7 +27,7 @@ namespace DAL
         #region Repositories
 
         IUtilisateurRepository Utilisateurs { get; } // <= Tous mes livres
-       IHistoriqueRepository Historiques { get; }
+        IHistoriqueRepository Historiques { get; }
 
 
         #endregion

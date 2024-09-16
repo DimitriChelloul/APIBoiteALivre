@@ -17,27 +17,27 @@ namespace BLL.ImplementationsService
 
         public async Task<IEnumerable<Utilisateur>> RecupererUtilisateurs()
         {
-            return await _db.Utilisateurs.RecupererUtilisateurs();
+            return await _db.Utilisateurs.RecupererUtilisateursAsync();
         }
 
         public async Task<Utilisateur> RecupererUtilisateurParIdAsync(int idUtilisateur)
         {
-            return await _db.Utilisateurs.GetUserByIdAsync(idUtilisateur);
+            return await _db.Utilisateurs.RecupererUtilisateurParIdAsync(idUtilisateur);
         }
 
         public async Task<Utilisateur> AjouterUtilisateurAsync(Utilisateur utilisateur)
         {
-            return await _db.Utilisateurs.CreateUtilisateurAsync(utilisateur);
+            return await _db.Utilisateurs.AjouterUtilisateurAsync(utilisateur);
         }
 
         public async Task<Utilisateur> ModifierUtilisateurAsync(Utilisateur utilisateur)
         {
-            return await _db.Utilisateurs.UpdateUserAsync(utilisateur);
+            return await _db.Utilisateurs.ModifierUtilisateurAsync(utilisateur);
         }
 
         public async Task MarquerUtilisateurCommeSupprimerAsync(int idUtilisateur)
         {
-            await _db.Utilisateurs.MarkUserAsDeletedAsync(idUtilisateur);
+            await _db.Utilisateurs.MarquerUtilisateurCommeSupprimerAsync(idUtilisateur);
         }
     }
 }

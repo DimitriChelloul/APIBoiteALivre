@@ -4,7 +4,7 @@ namespace DAL.Repertoire.Interfaces
 {
     public interface IUtilisateurRepository
     {
-        Task<IEnumerable<Utilisateur>> RecupererUtilisateurs();
+        Task<IEnumerable<Utilisateur>> RecupererUtilisateursAsync();
 
 
         Task<Utilisateur> RecupererUtilisateurParIdAsync(int idUtilisateur);

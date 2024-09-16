@@ -1,46 +1,76 @@
 ﻿using DAL.Repertoire.Implementations.MariaDB;
 using DAL.Repertoire.Interfaces;
 using DAL.Session;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DAL
 {
     internal class UOW : IUOW
     {
-        private readonly IDBSession _session;
+        private readonly IDBSession _dbSession;
+        private readonly DBType _dBType;
+        private readonly Dictionary<Type, Type> _currentRepositories;
 
-        public UOW(IDBSession DbSession)
+        private readonly Dictionary<Type, Type> repertoireMariaDb = new Dictionary<Type, Type>()
+    {
+        //MySQL | MariaDB   
+            { typeof(IUtilisateurRepository), typeof(UtilisateurRepositoryMariaDB) },
+            { typeof(IHistoriqueRepository), typeof(HistoriqueRepositoryMariaDB) }
+    };
+
+
+
+
+        public UOW(IDBSession dBSession, DBType dBType)
         {
-            _session = DbSession;
+            _dbSession = dBSession;
+            _dBType = dBType;
+            _currentRepositories = _dBType switch
+            {
+                DBType.MariaDB => repertoireMariaDb,
+                _ => throw new NotImplementedException()
+            };
         }
 
-        public IUtilisateurRepository Utilisateurs => new UtilisateurRepositoryMariaDB(_session);
 
-        public IHistoriqueRepository Historiques => new HistoriqueRepositoryMariaDB(_session);
+        //#pragma warning disable CS8603 // Existence possible d'un retour de référence null Impossible or PREFER CRASH APPLICATION. 
+
+        //    //Permet de créer une instance par reflexion avec la classe ACTIVATOR et de retourner une instance de l'interface
+        public IUtilisateurRepository Historique => Activator.CreateInstance(_currentRepositories[typeof(IUtilisateurRepository)], _dbSession) as IUtilisateurRepository;
+
+
+        public IHistoriqueRepository Utilisateur => Activator.CreateInstance(_currentRepositories[typeof(IHistoriqueRepository)], _dbSession) as IHistoriqueRepository;
+
+        //    //... Add your repositories here
+
+
+        //#pragma warning restore CS8603 // Existence possible d'un retour de référence null Impossible.
+
+
+        public IUtilisateurRepository Utilisateurs => new UtilisateurRepositoryMariaDB(_dbSession);
+
+        public IHistoriqueRepository Historiques => new HistoriqueRepositoryMariaDB(_dbSession);
 
         public void BeginTransaction()
         {
-            _session.BeginTransaction();
+            _dbSession.BeginTransaction();
         }
 
         public void Dispose()
         {
-            _session.Dispose();
+            _dbSession.Dispose();
         }
 
         public void Commit()
         {
-            _session.Commit();
+            _dbSession.Commit();
         }
 
         public void Rollback()
         {
-            _session.RollBack();
+            _dbSession.RollBack();
         }
     }
 
 }
+

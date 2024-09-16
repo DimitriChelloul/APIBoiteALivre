@@ -1,6 +1,7 @@
 ﻿using BLL.InterfacesService;
 using DAL;
 using DAL.Repertoire.Interfaces;
+using Domain.DTO.Reponses;
 using Domain.Entites;
 
 namespace BLL.ImplementationsService
@@ -14,14 +15,19 @@ namespace BLL.ImplementationsService
         {
             _db = db;
         }
-        public async Task<IEnumerable<Historique>> RecupererHistoriqueLivreAsync(int bookId, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<HistoriqueLivreReponseDTO>> RecupererHistoriqueLivreAsync(int idExemplaire, DateTime DateDebut, DateTime DateFin)
         {
-            return await _db.Historiques.RecupererHistoriqueLivreAsync(bookId, startDate, endDate);
+            return await _db.Historiques.RecupererHistoriqueLivreAsync(idExemplaire, DateDebut, DateFin);
         }
 
-        public async Task<IEnumerable<Historique>> RecupererHistoriqueLivreUtilisateurAsync(int idUtilisateur, DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<HistoriqueLivreReponseDTO>> RecupererHistoriqueLivreUtilisateurAsync(int idUtilisateur, DateTime DateDebut, DateTime DateFin)
         {
-            return await _db.Historiques.RecupererHistoriqueLivreUtilisateurAsync(idUtilisateur, startDate, endDate);
+            return await _db.Historiques.RecupererHistoriqueLivreUtilisateurAsync(idUtilisateur, DateDebut, DateFin);
+        }
+
+        public async Task<IEnumerable<ExemplairereponseDTO>> RecupererTousLesLivresAsync()
+        {
+            return await _db.Historiques.RecupererTousLesLivresAsync();
         }
 
     }

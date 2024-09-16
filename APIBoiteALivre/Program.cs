@@ -1,5 +1,8 @@
 using BLL;
 using DAL;
+using Domain.DTO.Requetes;
+using FluentValidation;
+using System.Reflection;
 
 
 
@@ -10,13 +13,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 
-builder.Services.AddBLL();
+//Add the FluentValidators in the IOC
+builder.Services.AddValidatorsFromAssemblyContaining<AjoutUtilisateurRequeteDTOValidateur>();
+builder.Services.AddValidatorsFromAssemblyContaining<ModificationUtilisateurRequeteValidateur>();
 
-//Ajout de la couche DAL avec les services
-builder.Services.AddDAL(new DALOptions()
+builder.Services.AddBLL(options => { });
+
+//ADD the DAL in the IOC
+builder.Services.AddDAL(options =>
 {
-    ConnectionString = "" //<= La chaine de connexion à la base de données "BOOK_STORE"
+    options.DBConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    Enum.TryParse(builder.Configuration.GetValue<string>("DBType"), out DBType dbType);
+    options.DBType = dbType;
 });
+
+
 
 var app = builder.Build();
 
