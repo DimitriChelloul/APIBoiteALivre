@@ -22,42 +22,29 @@ namespace APIBoiteALivre.Controllers
         }
 
 
-        [HttpGet("Historique")]
-        public async Task<IActionResult> RecupHistoriqueLivreUtilisateur(int idUtilisateur, DateTime periodeDebut, DateTime periodeFin)
-        {
-            //Vérifier les données d'entrée
 
-            //Appeler la logique métier
-            IEnumerable<HistoriqueLivreReponseDTO> historique = await _historiqueService.RecupererHistoriqueLivreUtilisateurAsync(idUtilisateur , periodeDebut , periodeFin);
 
-            return Ok(historique);
-        }
-
-        [HttpGet("admin/historique")]
+        [HttpGet("books/{idExemplaire}")]
         public async Task<IActionResult> RecupHistoriqueExemplaire(int idExemplaire, DateTime DateDebut, DateTime DateFin)
         {
-            try
-            {
-                IEnumerable<HistoriqueLivreReponseDTO> result = await _historiqueService.RecupererHistoriqueLivreAsync(idExemplaire, DateDebut, DateFin);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de l'exécution de la requête SQL.");
-                return StatusCode(500, "Erreur interne du serveur : " + ex.Message);
-            }
+
+            IEnumerable<HistoriqueLivreReponseDTO> result = await _historiqueService.RecupererHistoriqueLivreAsync(idExemplaire, DateDebut, DateFin);
+
+
+            return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("books")]
         public async Task<IActionResult> RecupererLivresAsync()
         {
             try
             {
-            IEnumerable<ExemplairereponseDTO> livres = await _historiqueService.RecupererTousLesLivresAsync();
+                IEnumerable<LivreReponseDTO> livres = await _historiqueService.RecupererTousLesLivresAsync();
                 return Ok(livres);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Erreur lors de la récupération des livres.");
                 return StatusCode(500, "Erreur interne du serveur : " + ex.Message);
             }
         }

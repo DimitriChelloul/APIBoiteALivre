@@ -36,10 +36,10 @@ namespace DAL
         //#pragma warning disable CS8603 // Existence possible d'un retour de référence null Impossible or PREFER CRASH APPLICATION. 
 
         //    //Permet de créer une instance par reflexion avec la classe ACTIVATOR et de retourner une instance de l'interface
-        public IUtilisateurRepository Historique => Activator.CreateInstance(_currentRepositories[typeof(IUtilisateurRepository)], _dbSession) as IUtilisateurRepository;
+        public IUtilisateurRepository Utilisateur => Activator.CreateInstance(_currentRepositories[typeof(IUtilisateurRepository)], _dbSession) as IUtilisateurRepository;
 
 
-        public IHistoriqueRepository Utilisateur => Activator.CreateInstance(_currentRepositories[typeof(IHistoriqueRepository)], _dbSession) as IHistoriqueRepository;
+        public IHistoriqueRepository Historique => Activator.CreateInstance(_currentRepositories[typeof(IHistoriqueRepository)], _dbSession) as IHistoriqueRepository;
 
         //    //... Add your repositories here
 

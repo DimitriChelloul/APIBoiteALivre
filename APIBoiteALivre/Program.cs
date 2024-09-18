@@ -1,3 +1,4 @@
+using APIBoiteALivre.Filtre;
 using BLL;
 using DAL;
 using Domain.DTO.Requetes;
@@ -10,8 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(ApiExceptionsFiltre));
+});
 
 //Add the FluentValidators in the IOC
 builder.Services.AddValidatorsFromAssemblyContaining<AjoutUtilisateurRequeteDTOValidateur>();
@@ -22,7 +26,7 @@ builder.Services.AddBLL(options => { });
 //ADD the DAL in the IOC
 builder.Services.AddDAL(options =>
 {
-    options.DBConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     Enum.TryParse(builder.Configuration.GetValue<string>("DBType"), out DBType dbType);
     options.DBType = dbType;
 });

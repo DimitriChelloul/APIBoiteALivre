@@ -2,9 +2,13 @@
 using Domain.DTO.Reponses;
 using Domain.DTO.Requetes;
 using Domain.Entites;
+using Domain.Exceptions;
 using FluentValidation;
+using APIBoiteALivre.Filtre;
+using Microsoft.AspNetCore.Http;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.ComponentModel.DataAnnotations;
 
@@ -212,4 +216,6 @@ namespace APIBoiteALivre.Controllers
             }
         }
     }
+
+    
 }

@@ -2,6 +2,7 @@
 using DAL.Session;
 using Dapper;
 using Domain.Entites;
+using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,7 +29,16 @@ namespace DAL.Repertoire.Implementations.MariaDB
         public async Task<Utilisateur> RecupererUtilisateurParIdAsync(int idUtilisateur)
         {
             string query = @"SELECT * FROM Utilisateur WHERE IdUtilisateur = @IdUtilisateur AND EstSupprimer = 0;";
-            return await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { IdUtilisateur = idUtilisateur });
+            var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { IdUtilisateur = idUtilisateur });
+
+            // Si l'utilisateur est null, lever une exception personnalisée
+            if (utilisateur == null)
+            {
+                throw new NotFoundEntityException("Utilisateur", idUtilisateur);
+            }
+
+            return utilisateur;
+
         }
 
         public async Task<Utilisateur> AjouterUtilisateurAsync(Utilisateur utilisateur)

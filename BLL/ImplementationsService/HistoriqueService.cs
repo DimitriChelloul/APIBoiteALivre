@@ -20,12 +20,7 @@ namespace BLL.ImplementationsService
             return await _db.Historiques.RecupererHistoriqueLivreAsync(idExemplaire, DateDebut, DateFin);
         }
 
-        public async Task<IEnumerable<HistoriqueLivreReponseDTO>> RecupererHistoriqueLivreUtilisateurAsync(int idUtilisateur, DateTime DateDebut, DateTime DateFin)
-        {
-            return await _db.Historiques.RecupererHistoriqueLivreUtilisateurAsync(idUtilisateur, DateDebut, DateFin);
-        }
-
-        public async Task<IEnumerable<ExemplairereponseDTO>> RecupererTousLesLivresAsync()
+        public async Task<IEnumerable<LivreReponseDTO>> RecupererTousLesLivresAsync()
         {
             return await _db.Historiques.RecupererTousLesLivresAsync();
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.DTO.Reponses
 {
-    public class ExemplairereponseDTO
+    public class LivreReponseDTO
     {
         public string ISBN { get; set; }
         public int IdExemplaire { get; set; }
