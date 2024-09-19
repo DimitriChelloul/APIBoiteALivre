@@ -19,6 +19,9 @@ namespace BLL.InterfacesService
 
 
         Task MarquerUtilisateurCommeSupprimerAsync(int idUtilisateur);
-        
+
+        Task<Utilisateur> AuthentifierUtilisateurAsync(string email);
+
+
     }
 }

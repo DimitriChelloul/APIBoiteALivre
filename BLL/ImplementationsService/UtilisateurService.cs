@@ -2,6 +2,7 @@
 using DAL;
 using DAL.Repertoire.Interfaces;
 using Domain.Entites;
+using Org.BouncyCastle.Crypto.Generators;
 
 
 namespace BLL.ImplementationsService
@@ -27,6 +28,7 @@ namespace BLL.ImplementationsService
 
         public async Task<Utilisateur> AjouterUtilisateurAsync(Utilisateur utilisateur)
         {
+            utilisateur.MotDePasse = BCrypt.Net.BCrypt.HashPassword(utilisateur.MotDePasse);
             return await _db.Utilisateurs.AjouterUtilisateurAsync(utilisateur);
         }
 
@@ -38,6 +40,12 @@ namespace BLL.ImplementationsService
         public async Task MarquerUtilisateurCommeSupprimerAsync(int idUtilisateur)
         {
             await _db.Utilisateurs.MarquerUtilisateurCommeSupprimerAsync(idUtilisateur);
+        }
+
+        public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
+        {
+            // Récupérer l'utilisateur par son email
+            return await _db.Utilisateurs.RecupererParEmailAsync(email);
         }
     }
 }

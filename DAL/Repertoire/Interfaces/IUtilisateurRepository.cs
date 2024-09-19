@@ -17,5 +17,7 @@ namespace DAL.Repertoire.Interfaces
 
 
         Task MarquerUtilisateurCommeSupprimerAsync(int idUtilisateur);
+
+        Task<Utilisateur> RecupererParEmailAsync(string email);
     }
 }

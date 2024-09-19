@@ -43,6 +43,17 @@ namespace DAL.Repertoire.Implementations.MariaDB
 
         public async Task<Utilisateur> AjouterUtilisateurAsync(Utilisateur utilisateur)
         {
+
+            var utilisateurExistant = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>
+                ("SELECT * FROM Utilisateur WHERE EmailUtilisateur = @EmailUtilisateur",
+                 new { EmailUtilisateur = utilisateur.EmailUtilisateur });
+
+            if (utilisateurExistant != null)
+            {
+                // If a user with the same email address is found, throw a UtilisateurExistantException
+                throw new UtilisateurExistantException(utilisateur.EmailUtilisateur);
+            }
+
             string query = @"INSERT INTO Utilisateur (NomUtilisateur, PrenomUtilisateur, PseudoUtilisateur, EmailUtilisateur, MotDePasse, Adresse1, Adresse2, Ville, CodePostal, DateInscription, NbJetons, Administrateur)
                          VALUES (@NomUtilisateur, @PrenomUtilisateur, @PseudoUtilisateur, @EmailUtilisateur, @MotDePasse, @Adresse1, @Adresse2, @Ville, @CodePostal, @DateInscription, @NbJetons, @Administrateur);
                          SELECT LAST_INSERT_ID();";
@@ -79,8 +90,19 @@ namespace DAL.Repertoire.Implementations.MariaDB
 
             if (result == 0)
             {
-                throw new Exception("Impossible de marquer l'utilisateur comme supprimé car il possède des exemplaires.");
+                throw new SuppressionUtilisateurImpossible("Utilisateur", idUtilisateur);
             }
+            
         }
+
+        public async Task<Utilisateur> RecupererParEmailAsync(string email)
+        {
+            string query = @"SELECT * FROM Utilisateur WHERE EmailUtilisateur = @Email AND EstSupprimer = 0;";
+           
+           var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { Email = email });
+
+            return utilisateur;
+        }
+
     }
 }

@@ -4,14 +4,11 @@ using Domain.DTO.Requetes;
 using Domain.Entites;
 using Domain.Exceptions;
 using FluentValidation;
-using APIBoiteALivre.Filtre;
-using Microsoft.AspNetCore.Http;
-using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Org.BouncyCastle.Asn1.Ocsp;
-using System.ComponentModel.DataAnnotations;
-
+using Org.BouncyCastle.Crypto.Generators;
+using System.Security.Claims;
+using System.Text;
 namespace APIBoiteALivre.Controllers
 {
     [ApiController]
@@ -38,7 +35,7 @@ namespace APIBoiteALivre.Controllers
         [HttpGet("utilisateurs")]
         public async Task<IActionResult> RecupererUtilisateur()
         {
-           
+
             IEnumerable<Utilisateur> utilisateurs = await _utilisateurService.RecupererUtilisateurs();
             return Ok(utilisateurs);
         }
@@ -52,7 +49,7 @@ namespace APIBoiteALivre.Controllers
         }
 
         [HttpPost("utilisateurs")]
-        public async Task<IActionResult> AjouterUtilisateur([FromBody] AjoutUtilisateurRequeteDTO requete)
+        public async Task<IActionResult> AjouterUtilisateur([FromBody] AjoutUtilisateurRequeteDTO requete, IValidator<AjoutUtilisateurRequeteDTO> validator)
         {
 
             // I) Verify the request
@@ -67,6 +64,8 @@ namespace APIBoiteALivre.Controllers
                 return BadRequest(problemDetails); // 400 Bad Request
             }
 
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(requete.MotDePasse);
+
             Utilisateur utilisateur = new Utilisateur()
             {
                 IdUtilisateur = requete.IdUtilisateur,
@@ -79,8 +78,8 @@ namespace APIBoiteALivre.Controllers
                 Adresse2 = requete.Adresse2,
                 CodePostal = requete.CodePostal,
                 Ville = requete.Ville,
-                DateInscription = requete.DateInscription,
-                MotDePasse = requete.MotDePasse,
+                DateInscription = DateTime.Now,
+                MotDePasse = hashedPassword,
                 NbJetons = requete.NbJetons,
                 EstSupprimer = requete.EstSupprimer
             };
@@ -114,7 +113,7 @@ namespace APIBoiteALivre.Controllers
         }
 
         [HttpPut("utilisateurs/{idUtilisateur}")]
-        public async Task<IActionResult> ModifyBook([FromRoute] int idUtilisateur, [FromBody] ModificationUtilisateurRequete requete)
+        public async Task<IActionResult> ModifyUtilisateur([FromRoute] int idUtilisateur, [FromBody] ModificationUtilisateurRequete requete, IValidator<ModificationUtilisateurRequete> validator)
         {
             FluentValidation.Results.ValidationResult validationResult = await _modificationUtilisateurValidator.ValidateAsync(requete);
             if (!validationResult.IsValid)
@@ -145,6 +144,10 @@ namespace APIBoiteALivre.Controllers
                 EstSupprimer = requete.EstSupprimer
             };
 
+
+            var motDePasseHashé = BCrypt.Net.BCrypt.HashPassword(requete.MotDePasse);
+
+
             //Appeler la logique métier
             Utilisateur utilisateurModifie = await _utilisateurService.ModifierUtilisateurAsync(utilisateur);
 
@@ -167,7 +170,7 @@ namespace APIBoiteALivre.Controllers
                 CodePostal = utilisateurModifie.CodePostal,
                 Ville = utilisateurModifie.Ville,
                 DateInscription = utilisateurModifie.DateInscription,
-                MotDePasse = utilisateurModifie.MotDePasse,
+                MotDePasse = motDePasseHashé,
                 NbJetons = utilisateurModifie.NbJetons,
                 EstSupprimer = utilisateurModifie.EstSupprimer
             };
@@ -199,23 +202,61 @@ namespace APIBoiteALivre.Controllers
         [HttpPut("utilisateurs/supprimer/{idUtilisateur}")]
         public async Task<IActionResult> MarquerUtilisateurCommeSupprimer(int idUtilisateur)
         {
-            try
-            {
-                // Appel à la méthode du service pour marquer l'utilisateur comme supprimé
-                await _utilisateurService.MarquerUtilisateurCommeSupprimerAsync(idUtilisateur);
 
-                // Si tout se passe bien, renvoyer une réponse 204 No Content (utilisateur marqué comme supprimé avec succès)
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la suppression de l'utilisateur avec Id {IdUtilisateur}", idUtilisateur);
+            // Appel à la méthode du service pour marquer l'utilisateur comme supprimé
+            await _utilisateurService.MarquerUtilisateurCommeSupprimerAsync(idUtilisateur);
 
-                // Si une exception survient, renvoyer une erreur 500 (ou une erreur spécifique selon le type d'erreur)
-                return StatusCode(500, "Erreur interne du serveur : " + ex.Message);
-            }
+            // Si tout se passe bien, renvoyer une réponse 204 No Content (utilisateur marqué comme supprimé avec succès)
+            return NoContent();
         }
+
+        // Authentifier un utilisateur (accessible à tous)
+        //[HttpPost("authentification")]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Authentifier([FromBody] AuthentificationDTO authentificationDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+        //    var utilisateur = await _utilisateurService.AuthentifierUtilisateurAsync(authentificationDTO.EmailUtilisateur);
+        //    if (utilisateur == null)
+        //        return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+
+        //    // Vérifier le mot de passe avec BCrypt
+        //    if (!BCrypt.Net.BCrypt.Verify(authentificationDTO.MotDePasse, utilisateur.MotDePasse))
+        //        return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+
+        //    // Gérer ici la génération du token JWT
+        //    var token = GenererTokenJWT(utilisateur);
+
+        //    return Ok(new { token });
+        //}
+
+        //// Génération du token JWT
+        //private string GenererTokenJWT(Utilisateur utilisateur)
+        //{
+        //    var claims = new[]
+        //    {
+        //        new Claim(ClaimTypes.NameIdentifier, utilisateur.IdUtilisateur.ToString()),
+        //        new Claim(ClaimTypes.Email, utilisateur.EmailUtilisateur),
+        //        new Claim(ClaimTypes.Role, utilisateur.Administrateur ? "Admin" : "User")
+        //    };
+
+        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TaCleSecretePourJWT"));
+        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        //    var token = new JwtSecurityToken(
+        //        issuer: "tonsite.com",
+        //        audience: "tonsite.com",
+        //        claims: claims,
+        //        expires: DateTime.Now.AddHours(1),
+        //        signingCredentials: creds
+        //    );
+
+        //    return new JwtSecurityTokenHandler().WriteToken(token);
+        //}
+
     }
 
-    
+
 }

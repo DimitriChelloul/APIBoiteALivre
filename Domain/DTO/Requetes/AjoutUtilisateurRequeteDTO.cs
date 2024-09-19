@@ -1,9 +1,4 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.DTO.Requetes
 {
@@ -20,7 +15,7 @@ namespace Domain.DTO.Requetes
         public string Adresse2 { get; set; }
         public string Ville { get; set; }
         public string CodePostal { get; set; }
-        public DateTime DateInscription { get; set; }
+        //public DateTime DateInscription { get; set; }
         public int NbJetons { get; set; }
         public int EstSupprimer { get; set; }
     }
@@ -67,8 +62,8 @@ namespace Domain.DTO.Requetes
                 .Matches("^[0-9]{5}$") // Assure que le CodePostal est composé de 5 chiffres
                 .WithMessage("Le code postal doit comporter 5 chiffres.");
 
-            RuleFor(x => x.DateInscription)
-                .NotEmpty();
+            //RuleFor(x => x.DateInscription)
+            //    .NotEmpty();
 
             RuleFor(x => x.NbJetons)
                 .GreaterThanOrEqualTo(0); // NbJetons doit être >= 0

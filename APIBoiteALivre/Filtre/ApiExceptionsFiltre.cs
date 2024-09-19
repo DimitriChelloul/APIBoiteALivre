@@ -15,7 +15,8 @@ namespace APIBoiteALivre.Filtre
             _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
             {
                 {typeof(NotFoundEntityException), HandleNotFoundException },
-                //{typeof(UnauthorizeAccessException), HandleUnauthorizeAccessException },
+                {typeof(SuppressionUtilisateurImpossible), GererSuppressionUtilisateurImpossible },
+                {typeof(UtilisateurExistantException), GererUtilisateurExistantException }
 
             };
         }
@@ -146,5 +147,54 @@ namespace APIBoiteALivre.Filtre
 
             context.ExceptionHandled = true;
         }
+
+        /// <summary>
+        /// Gere une exception de type "Suppression d utilisateur impossible"
+        /// </summary>
+        /// <param name="context">Context de l exception</param>
+        private void GererSuppressionUtilisateurImpossible(ExceptionContext context)
+        {
+            var exception = context.Exception as SuppressionUtilisateurImpossible;
+
+            var details = new ProblemDetails()
+            {
+                Detail = exception?.Message,
+                Title = "L'utilisateur selectionné ne peut etre supprimer car il possede des livres.",
+                Status = StatusCodes.Status400BadRequest,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            };
+
+            
+            context.Result = new ObjectResult(details)
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+            };
+
+            context.ExceptionHandled = true;
+
+        }
+
+        private void GererUtilisateurExistantException(ExceptionContext context)
+        {
+            var exception = context.Exception as UtilisateurExistantException;
+
+            var details = new ProblemDetails()
+            {
+                Detail = exception?.Message,
+                Title = "L'utilisateur que vous voulez ajouter existe déjà.",
+                Status = StatusCodes.Status400BadRequest,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            };
+
+
+            context.Result = new ObjectResult(details)
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+            };
+
+            context.ExceptionHandled = true;
+
+        }
+
     }
 }
