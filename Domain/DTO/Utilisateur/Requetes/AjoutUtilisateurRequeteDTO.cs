@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Domain.DTO.Requetes
+namespace Domain.DTO.Utilisateur.Requetes
 {
     public class AjoutUtilisateurRequeteDTO
     {

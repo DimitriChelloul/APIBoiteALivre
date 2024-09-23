@@ -1,7 +1,7 @@
 using APIBoiteALivre.Filtre;
 using BLL;
 using DAL;
-using Domain.DTO.Requetes;
+using Domain.DTO.Utilisateur.Requetes;
 using FluentValidation;
 using System.Reflection;
 

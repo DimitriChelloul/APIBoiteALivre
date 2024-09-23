@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Domain.DTO.Reponses;
+using Domain.DTO.Historique.Reponse;
 using Domain.Entites;
 
 namespace DAL.Repertoire.Interfaces

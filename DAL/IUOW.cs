@@ -26,7 +26,7 @@ namespace DAL
 
         #region Repositories
 
-        IUtilisateurRepository Utilisateurs { get; } 
+        IUtilisateurRepository Utilisateurs { get; }
         IHistoriqueRepository Historiques { get; }
 
 

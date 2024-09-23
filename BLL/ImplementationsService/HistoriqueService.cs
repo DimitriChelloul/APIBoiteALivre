@@ -1,7 +1,7 @@
 ﻿using BLL.InterfacesService;
 using DAL;
 using DAL.Repertoire.Interfaces;
-using Domain.DTO.Reponses;
+using Domain.DTO.Historique.Reponse;
 using Domain.Entites;
 
 namespace BLL.ImplementationsService

@@ -42,10 +42,10 @@ namespace BLL.ImplementationsService
             await _db.Utilisateurs.MarquerUtilisateurCommeSupprimerAsync(idUtilisateur);
         }
 
-        public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
+        public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email, string motDePasse)
         {
             // Récupérer l'utilisateur par son email
-            return await _db.Utilisateurs.RecupererParEmailAsync(email);
+            return await _db.Utilisateurs.RecupererParEmailAsync(email, motDePasse);
         }
     }
 }

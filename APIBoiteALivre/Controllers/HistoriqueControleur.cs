@@ -1,16 +1,16 @@
 ﻿using BLL.InterfacesService;
-using Domain.DTO.Reponses;
 using Microsoft.AspNetCore.Mvc;
 using BLL;
 using Domain.Entites;
 using MySqlX.XDevAPI.Common;
+using Domain.DTO.Historique.Reponse;
 
 namespace APIBoiteALivre.Controllers
 {
 
     [ApiController]
     [Route("/APIBoiteALivre")]
-    public class HistoriqueControleur : ControllerBase
+    public class HistoriqueControleur : ApiBaseControleur
     {
         private readonly ILogger<HistoriqueControleur> _logger;
         private readonly IHistoriqueService _historiqueService;

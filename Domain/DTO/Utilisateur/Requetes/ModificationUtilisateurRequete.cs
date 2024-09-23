@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DTO.Requetes
+namespace Domain.DTO.Utilisateur.Requetes
 {
     public class ModificationUtilisateurRequete
     {
@@ -74,8 +74,8 @@ namespace Domain.DTO.Requetes
                 .GreaterThanOrEqualTo(0); // NbJetons doit être >= 0
 
 
-        RuleFor(x => x.Administrateur)
-            .InclusiveBetween(0, 1); // Administrateur doit être soit 0 soit 1
+            RuleFor(x => x.Administrateur)
+                .InclusiveBetween(0, 1); // Administrateur doit être soit 0 soit 1
         }
     }
 

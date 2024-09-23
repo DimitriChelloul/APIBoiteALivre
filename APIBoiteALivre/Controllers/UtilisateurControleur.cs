@@ -1,6 +1,6 @@
 ﻿using BLL.InterfacesService;
-using Domain.DTO.Reponses;
-using Domain.DTO.Requetes;
+using Domain.DTO.Utilisateur.Reponse;
+using Domain.DTO.Utilisateur.Requetes;
 using Domain.Entites;
 using Domain.Exceptions;
 using FluentValidation;
@@ -13,7 +13,7 @@ namespace APIBoiteALivre.Controllers
 {
     [ApiController]
     [Route("/APIBoiteALivre")]
-    public class UtilisateurControleur : ControllerBase
+    public class UtilisateurControleur : ApiBaseControleur
     {
         private readonly ILogger<UtilisateurControleur> _logger;
         private readonly IUtilisateurService _utilisateurService;
@@ -210,27 +210,30 @@ namespace APIBoiteALivre.Controllers
             return NoContent();
         }
 
-        // Authentifier un utilisateur (accessible à tous)
-        //[HttpPost("authentification")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Authentifier([FromBody] AuthentificationDTO authentificationDTO)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
+        ////Authentifier un utilisateur(accessible à tous)
+        [HttpPost("authentification")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Authentifier([FromBody] AuthentificationDTORequete requete, [FromServices] AuthentificationDTORequetevalidator validator)
+        {
 
-        //    var utilisateur = await _utilisateurService.AuthentifierUtilisateurAsync(authentificationDTO.EmailUtilisateur);
-        //    if (utilisateur == null)
-        //        return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+            var badRequest = await ValiderRequete(requete, validator);
 
-        //    // Vérifier le mot de passe avec BCrypt
-        //    if (!BCrypt.Net.BCrypt.Verify(authentificationDTO.MotDePasse, utilisateur.MotDePasse))
-        //        return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+            if (badRequest is not null)
+                return badRequest;
 
-        //    // Gérer ici la génération du token JWT
-        //    var token = GenererTokenJWT(utilisateur);
+            var utilisateur = await _utilisateurService.AuthentifierUtilisateurAsync(requete.emailUtilisateur, requete.motDePasse );
+            if (utilisateur == null)
+                return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
-        //    return Ok(new { token });
-        //}
+            // Vérifier le mot de passe avec BCrypt
+            if (!BCrypt.Net.BCrypt.Verify(requete.motDePasse, utilisateur.MotDePasse))
+                return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+
+            // Gérer ici la génération du token JWT
+            var token = GenererTokenJWT(utilisateur);
+
+            return Ok(new { token });
+        }
 
         //// Génération du token JWT
         //private string GenererTokenJWT(Utilisateur utilisateur)
@@ -239,7 +242,7 @@ namespace APIBoiteALivre.Controllers
         //    {
         //        new Claim(ClaimTypes.NameIdentifier, utilisateur.IdUtilisateur.ToString()),
         //        new Claim(ClaimTypes.Email, utilisateur.EmailUtilisateur),
-        //        new Claim(ClaimTypes.Role, utilisateur.Administrateur ? "Admin" : "User")
+        //        new Claim(ClaimTypes.Role, utilisateur.Administrateur == 1 ? "Admin" : "User")
         //    };
 
         //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TaCleSecretePourJWT"));

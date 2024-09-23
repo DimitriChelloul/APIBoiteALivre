@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DTO.Reponses
+namespace Domain.DTO.Utilisateur.Reponse
 {
-    public class AjoutUtilisateurReponseDTO
+    public class ModificationUtilisateurReponseDTO
     {
         public int IdUtilisateur { get; set; }
         public int Administrateur { get; set; }

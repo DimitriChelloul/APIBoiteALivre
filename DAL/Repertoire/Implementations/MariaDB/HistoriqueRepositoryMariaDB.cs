@@ -2,9 +2,9 @@
 using DAL.Session;
 using Domain.Entites;
 using Dapper;
-using Domain.DTO.Reponses;
 using System.Data.Common;
 using Domain.Exceptions;
+using Domain.DTO.Historique.Reponse;
 
 namespace DAL.Repertoire.Implementations.MariaDB
 {
