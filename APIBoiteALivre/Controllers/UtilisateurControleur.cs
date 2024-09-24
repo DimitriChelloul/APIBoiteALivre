@@ -6,9 +6,7 @@ using Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Crypto.Generators;
-using System.Security.Claims;
-using System.Text;
+
 namespace APIBoiteALivre.Controllers
 {
     [ApiController]
@@ -43,7 +41,17 @@ namespace APIBoiteALivre.Controllers
         [HttpGet("utilisateurs/{idUtilisateur}")]
         public async Task<IActionResult> RecupererUtilisateurParId(int idUtilisateur)
         {
+            if (idUtilisateur <= 0)
+            {
+                return BadRequest();
+            }
+
             var utilisateur = await _utilisateurService.RecupererUtilisateurParIdAsync(idUtilisateur);
+
+            if (utilisateur == null)
+            {
+                return NotFound();
+            }
 
             return Ok(utilisateur);
         }
@@ -65,7 +73,7 @@ namespace APIBoiteALivre.Controllers
             }
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(requete.MotDePasse);
-
+            
             Utilisateur utilisateur = new Utilisateur()
             {
                 IdUtilisateur = requete.IdUtilisateur,
@@ -126,6 +134,8 @@ namespace APIBoiteALivre.Controllers
                 return BadRequest(problemDetails); // 400 Bad Request
             }
 
+            var motDePasseHashé = BCrypt.Net.BCrypt.HashPassword(requete.MotDePasse);
+
             Utilisateur utilisateur = new Utilisateur()
             {
                 IdUtilisateur = requete.IdUtilisateur,
@@ -139,14 +149,10 @@ namespace APIBoiteALivre.Controllers
                 CodePostal = requete.CodePostal,
                 Ville = requete.Ville,
                 DateInscription = requete.DateInscription,
-                MotDePasse = requete.MotDePasse,
+                MotDePasse = motDePasseHashé,
                 NbJetons = requete.NbJetons,
                 EstSupprimer = requete.EstSupprimer
             };
-
-
-            var motDePasseHashé = BCrypt.Net.BCrypt.HashPassword(requete.MotDePasse);
-
 
             //Appeler la logique métier
             Utilisateur utilisateurModifie = await _utilisateurService.ModifierUtilisateurAsync(utilisateur);
@@ -170,7 +176,7 @@ namespace APIBoiteALivre.Controllers
                 CodePostal = utilisateurModifie.CodePostal,
                 Ville = utilisateurModifie.Ville,
                 DateInscription = utilisateurModifie.DateInscription,
-                MotDePasse = motDePasseHashé,
+                MotDePasse = utilisateurModifie.MotDePasse,
                 NbJetons = utilisateurModifie.NbJetons,
                 EstSupprimer = utilisateurModifie.EstSupprimer
             };
@@ -221,7 +227,7 @@ namespace APIBoiteALivre.Controllers
             if (badRequest is not null)
                 return badRequest;
 
-            var utilisateur = await _utilisateurService.AuthentifierUtilisateurAsync(requete.emailUtilisateur, requete.motDePasse );
+            var utilisateur = await _utilisateurService.AuthentifierUtilisateurAsync(requete.emailUtilisateur);
             if (utilisateur == null)
                 return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
@@ -230,36 +236,9 @@ namespace APIBoiteALivre.Controllers
                 return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
             // Gérer ici la génération du token JWT
-            var token = GenererTokenJWT(utilisateur);
+            var token = _utilisateurService.GenererTokenJWT(utilisateur);
 
-            return Ok(new { token });
+            return Ok(new {access_token = token });
         }
-
-        //// Génération du token JWT
-        //private string GenererTokenJWT(Utilisateur utilisateur)
-        //{
-        //    var claims = new[]
-        //    {
-        //        new Claim(ClaimTypes.NameIdentifier, utilisateur.IdUtilisateur.ToString()),
-        //        new Claim(ClaimTypes.Email, utilisateur.EmailUtilisateur),
-        //        new Claim(ClaimTypes.Role, utilisateur.Administrateur == 1 ? "Admin" : "User")
-        //    };
-
-        //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("TaCleSecretePourJWT"));
-        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        //    var token = new JwtSecurityToken(
-        //        issuer: "tonsite.com",
-        //        audience: "tonsite.com",
-        //        claims: claims,
-        //        expires: DateTime.Now.AddHours(1),
-        //        signingCredentials: creds
-        //    );
-
-        //    return new JwtSecurityTokenHandler().WriteToken(token);
-        //}
-
     }
-
-
 }

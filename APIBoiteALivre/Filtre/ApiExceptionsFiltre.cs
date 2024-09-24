@@ -16,8 +16,8 @@ namespace APIBoiteALivre.Filtre
             {
                 {typeof(NotFoundEntityException), HandleNotFoundException },
                 {typeof(SuppressionUtilisateurImpossible), GererSuppressionUtilisateurImpossible },
-                {typeof(UtilisateurExistantException), GererUtilisateurExistantException }
-
+                {typeof(UtilisateurExistantException), GererUtilisateurExistantException },
+                {typeof(AuthentificationException), GererAuthentificationException }
             };
         }
 
@@ -177,6 +177,28 @@ namespace APIBoiteALivre.Filtre
         private void GererUtilisateurExistantException(ExceptionContext context)
         {
             var exception = context.Exception as UtilisateurExistantException;
+
+            var details = new ProblemDetails()
+            {
+                Detail = exception?.Message,
+                Title = "L'utilisateur que vous voulez ajouter existe déjà.",
+                Status = StatusCodes.Status400BadRequest,
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
+            };
+
+
+            context.Result = new ObjectResult(details)
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+            };
+
+            context.ExceptionHandled = true;
+
+        }
+
+        private void GererAuthentificationException(ExceptionContext context)
+        {
+            var exception = context.Exception as AuthentificationException;
 
             var details = new ProblemDetails()
             {

@@ -18,6 +18,6 @@ namespace DAL.Repertoire.Interfaces
 
         Task MarquerUtilisateurCommeSupprimerAsync(int idUtilisateur);
 
-        Task<Utilisateur> AuthentifierUtilisateurAsync(string email, string motDePasse);
+        Task<Utilisateur> AuthentifierUtilisateurAsync(string email);
     }
 }

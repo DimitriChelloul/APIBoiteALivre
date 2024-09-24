@@ -95,11 +95,11 @@ namespace DAL.Repertoire.Implementations.MariaDB
             
         }
 
-        public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email, string motDePasse)
+        public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
         {
-            string query = @"SELECT * FROM Utilisateur WHERE EmailUtilisateur = @Email AND EstSupprimer = 0 AND MotDePasse = @MotDePasse;";
+            string query = @"SELECT * FROM Utilisateur WHERE EmailUtilisateur = @Email AND EstSupprimer = 0;";
            
-           var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { Email = email , MotDePasse = motDePasse});
+           var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { Email = email});
 
             return utilisateur;
         }
