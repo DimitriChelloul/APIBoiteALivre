@@ -66,20 +66,20 @@ namespace BLL.ImplementationsService
                 [ClaimTypes.NameIdentifier] = utilisateur.NomUtilisateur.ToString(),
                 [JwtRegisteredClaimNames.Jti] = Guid.NewGuid().ToString(),
                 [ClaimTypes.Email] = utilisateur.EmailUtilisateur,
-                [ClaimTypes.Role] = utilisateur.Administrateur == 1 ? "Administrateur" : "Utilisateur"
+                [ClaimTypes.Role] = utilisateur.Administrateur == 1 ? "administrateur" : "utilisateur"
             };
 
 
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("MaCleSecretePourJWTQuiEstAssezLongue"));
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWTSecret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var expires = DateTime.Now.AddHours(1);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Issuer = "http://localhost:5229",
-                Audience = "http://localhost:5229",
+                Issuer = _configuration["JWTIssuer"],
+                Audience = _configuration["JWTAudience"],
                 Claims = claims,
                 Expires = expires,
                 SigningCredentials = creds

@@ -39,6 +39,7 @@ namespace APIBoiteALivre.Controllers
         }
 
         [HttpGet("utilisateurs/{idUtilisateur}")]
+        [Authorize(Roles = "administrateur")]
         public async Task<IActionResult> RecupererUtilisateurParId(int idUtilisateur)
         {
             if (idUtilisateur <= 0)

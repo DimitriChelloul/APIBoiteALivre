@@ -17,7 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
 {
+#if !DEBUG
     options.Filters.Add(typeof(ApiExceptionsFiltre));
+#endif
 });
 
 //Add the FluentValidators in the IOC
@@ -42,8 +44,10 @@ builder.Services
         {
             ValidateIssuer = false,
             ValidateAudience = false,
+            ValidIssuer = builder.Configuration["JWTIssuer"],
+            ValidAudience = builder.Configuration["JWTAudience"],
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MaCleSecretePourJWTQuiEstAssezLongue")),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSecret"])),
             ClockSkew = TimeSpan.Zero
         };
     });
