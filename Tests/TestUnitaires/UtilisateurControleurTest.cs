@@ -11,7 +11,7 @@ using Domain.DTO.Utilisateur.Requetes;
 using Domain.DTO.Utilisateur.Reponse;
 using Microsoft.Extensions.Configuration;
 
-namespace Tests
+namespace Tests.TestUnitaires
 {
     public class UtilisateurControleurTest
     {
@@ -49,7 +49,7 @@ namespace Tests
                 .Setup((instance) => instance.RecupererUtilisateurParIdAsync(id))
                 .ReturnsAsync(utilisateur);
 
-            UtilisateurControleur utilisateurControleur = new UtilisateurControleur(logger, utilisateurService,validator,modificationValidator, configuration.Object);
+            UtilisateurControleur utilisateurControleur = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator, configuration.Object);
 
 
             //Act
@@ -60,7 +60,7 @@ namespace Tests
 
             result.Should().BeOfType<OkObjectResult>().And.NotBeNull();
 
-            
+
 
             //var okObjectResult = result as OkObjectResult;
 
@@ -103,7 +103,7 @@ namespace Tests
         {
 
             //Arrange
-            
+
             IUtilisateurService utilisateurService = Mock.Of<IUtilisateurService>();
             var logger = Mock.Of<ILogger<UtilisateurControleur>>();
             var validator = Mock.Of<IValidator<AjoutUtilisateurRequeteDTO>>();
@@ -111,7 +111,7 @@ namespace Tests
             var configuration = new Mock<IConfiguration>();
 
 
-            UtilisateurControleur utilisateurController = new UtilisateurControleur(logger,utilisateurService, validator, modificationValidator, configuration.Object);
+            UtilisateurControleur utilisateurController = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator, configuration.Object);
 
             //Act
             var result = await utilisateurController.RecupererUtilisateurParId(id);
