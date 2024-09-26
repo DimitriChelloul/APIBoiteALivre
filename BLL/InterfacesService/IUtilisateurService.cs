@@ -22,7 +22,5 @@ namespace BLL.InterfacesService
 
         Task<Utilisateur> AuthentifierUtilisateurAsync(string email);
 
-        string GenererTokenJWT(Utilisateur utilisateur);
-
     }
 }

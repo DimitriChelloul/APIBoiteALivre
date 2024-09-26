@@ -12,6 +12,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+using APIBoiteALivre.Filtre;
 
 
 
@@ -22,9 +23,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
 {
-#if !DEBUG
+
     options.Filters.Add(typeof(ApiExceptionsFiltre));
-#endif
+
 });
 
 //Add the FluentValidators in the IOC

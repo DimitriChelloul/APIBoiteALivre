@@ -2,10 +2,12 @@
 using Domain.DTO.Utilisateur.Reponse;
 using Domain.DTO.Utilisateur.Requetes;
 using Domain.Entites;
-using Domain.Exceptions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace APIBoiteALivre.Controllers
 {
@@ -17,17 +19,19 @@ namespace APIBoiteALivre.Controllers
         private readonly IUtilisateurService _utilisateurService;
         private readonly IValidator<AjoutUtilisateurRequeteDTO> _ajoutUtilisateurValidator;
         private readonly IValidator<ModificationUtilisateurRequete> _modificationUtilisateurValidator;
+        public IConfiguration _configuration { get; }
 
         public UtilisateurControleur(
             ILogger<UtilisateurControleur> logger,
             IUtilisateurService utilisateurService,
             IValidator<AjoutUtilisateurRequeteDTO> ajoutUtilisateurValidator,
-            IValidator<ModificationUtilisateurRequete> modificationUtilisateurValidator)
+            IValidator<ModificationUtilisateurRequete> modificationUtilisateurValidator, IConfiguration configuration)
         {
             _logger = logger;
             _utilisateurService = utilisateurService;
             _ajoutUtilisateurValidator = ajoutUtilisateurValidator;
             _modificationUtilisateurValidator = modificationUtilisateurValidator;
+            _configuration = configuration;
         }
 
         [HttpGet("utilisateurs")]
@@ -237,9 +241,46 @@ namespace APIBoiteALivre.Controllers
                 return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
             // Gérer ici la génération du token JWT
-            var token = _utilisateurService.GenererTokenJWT(utilisateur);
+            var token = GenererTokenJWT(utilisateur);
 
-            return Ok(new {access_token = token });
+            return Ok(new { access_token = token });
+        }
+
+        //// Génération du token JWT
+        private string GenererTokenJWT(Utilisateur utilisateur)
+        {
+
+            // Info utilisateur
+            var claims = new Dictionary<string, Object>()
+            {
+                [ClaimTypes.NameIdentifier] = utilisateur.NomUtilisateur.ToString(),
+                [JwtRegisteredClaimNames.Jti] = Guid.NewGuid().ToString(),
+                [ClaimTypes.Email] = utilisateur.EmailUtilisateur,
+                [ClaimTypes.Role] = utilisateur.Administrateur == 1 ? "administrateur" : "utilisateur"
+            };
+
+
+
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWTSecret"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var expires = DateTime.Now.AddHours(1);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Issuer = _configuration["JWTIssuer"],
+                Audience = _configuration["JWTAudience"],
+                Claims = claims,
+                Expires = expires,
+                SigningCredentials = creds
+            };
+
+            // Générer et retourner le token JWT
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+
         }
     }
 }

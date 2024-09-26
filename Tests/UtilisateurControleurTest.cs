@@ -9,6 +9,7 @@ using FluentAssertions;
 using Domain.Exceptions;
 using Domain.DTO.Utilisateur.Requetes;
 using Domain.DTO.Utilisateur.Reponse;
+using Microsoft.Extensions.Configuration;
 
 namespace Tests
 {
@@ -23,6 +24,7 @@ namespace Tests
             var logger = Mock.Of<ILogger<UtilisateurControleur>>();
             var validator = Mock.Of<IValidator<AjoutUtilisateurRequeteDTO>>();
             var modificationValidator = Mock.Of<IValidator<ModificationUtilisateurRequete>>();
+            var configuration = new Mock<IConfiguration>();
 
             var utilisateur = new Utilisateur()
             {
@@ -47,7 +49,7 @@ namespace Tests
                 .Setup((instance) => instance.RecupererUtilisateurParIdAsync(id))
                 .ReturnsAsync(utilisateur);
 
-            UtilisateurControleur utilisateurControleur = new UtilisateurControleur(logger, utilisateurService,validator,modificationValidator);
+            UtilisateurControleur utilisateurControleur = new UtilisateurControleur(logger, utilisateurService,validator,modificationValidator, configuration.Object);
 
 
             //Act
@@ -78,12 +80,13 @@ namespace Tests
             var logger = Mock.Of<ILogger<UtilisateurControleur>>();
             var validator = Mock.Of<IValidator<AjoutUtilisateurRequeteDTO>>();
             var modificationValidator = Mock.Of<IValidator<ModificationUtilisateurRequete>>();
+            var configuration = new Mock<IConfiguration>();
 
             Mock.Get(utilisateurService)
                 .Setup((instance) => instance.RecupererUtilisateurParIdAsync(id))
                 .ThrowsAsync(new NotFoundEntityException("Utilisateur", 9999));
 
-            UtilisateurControleur controller = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator);
+            UtilisateurControleur controller = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator, configuration.Object);
 
             //Act
             var action = () => controller.RecupererUtilisateurParId(id);
@@ -105,9 +108,10 @@ namespace Tests
             var logger = Mock.Of<ILogger<UtilisateurControleur>>();
             var validator = Mock.Of<IValidator<AjoutUtilisateurRequeteDTO>>();
             var modificationValidator = Mock.Of<IValidator<ModificationUtilisateurRequete>>();
+            var configuration = new Mock<IConfiguration>();
 
 
-            UtilisateurControleur utilisateurController = new UtilisateurControleur(logger,utilisateurService, validator, modificationValidator);
+            UtilisateurControleur utilisateurController = new UtilisateurControleur(logger,utilisateurService, validator, modificationValidator, configuration.Object);
 
             //Act
             var result = await utilisateurController.RecupererUtilisateurParId(id);
@@ -126,12 +130,13 @@ namespace Tests
             var logger = Mock.Of<ILogger<UtilisateurControleur>>();
             var validator = Mock.Of<IValidator<AjoutUtilisateurRequeteDTO>>();
             var modificationValidator = Mock.Of<IValidator<ModificationUtilisateurRequete>>();
+            var configuration = new Mock<IConfiguration>();
 
             Mock.Get(utilisateurService)
                 .Setup(utilisateurService => utilisateurService.RecupererUtilisateurParIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(null as Utilisateur);
 
-            UtilisateurControleur utilisateurController = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator);
+            UtilisateurControleur utilisateurController = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator, configuration.Object);
             //Act
             var result = await utilisateurController.RecupererUtilisateurParId(1);
 
@@ -148,13 +153,14 @@ namespace Tests
             var logger = Mock.Of<ILogger<UtilisateurControleur>>();
             var validator = Mock.Of<IValidator<AjoutUtilisateurRequeteDTO>>();
             var modificationValidator = Mock.Of<IValidator<ModificationUtilisateurRequete>>();
+            var configuration = new Mock<IConfiguration>();
 
 
             Mock.Get(utilisateurService)
                 .Setup(utilisateurService => utilisateurService.RecupererUtilisateurParIdAsync(1))
                 .ReturnsAsync(new Utilisateur() { IdUtilisateur = 1 });
 
-            UtilisateurControleur utilisateurControleur = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator); ;
+            UtilisateurControleur utilisateurControleur = new UtilisateurControleur(logger, utilisateurService, validator, modificationValidator, configuration.Object); ;
             //Act
             var result = await utilisateurControleur.RecupererUtilisateurParId(1);
 
@@ -172,6 +178,7 @@ namespace Tests
             var utilisateurService = new Mock<IUtilisateurService>();
             var validator = new Mock<IValidator<AjoutUtilisateurRequeteDTO>>();
             var logger = Mock.Of<ILogger<UtilisateurControleur>>();
+            var configuration = new Mock<IConfiguration>();
 
             var validRequest = new AjoutUtilisateurRequeteDTO
             {
@@ -195,7 +202,7 @@ namespace Tests
             utilisateurService.Setup(s => s.AjouterUtilisateurAsync(It.IsAny<Utilisateur>()))
                               .ReturnsAsync(new Utilisateur { IdUtilisateur = 1 });
 
-            var controller = new UtilisateurControleur(logger, utilisateurService.Object, validator.Object, null);
+            var controller = new UtilisateurControleur(logger, utilisateurService.Object, validator.Object, null, configuration.Object);
 
             // Act
             var result = await controller.AjouterUtilisateur(validRequest, validator.Object);
@@ -208,6 +215,77 @@ namespace Tests
             Assert.NotNull(response);
             Assert.Equal(1, response.IdUtilisateur);
         }
+
+        [Fact]
+        public async Task AjouterUtilisateur_RequeteInvalide_DevraitRetourner_BadRequest()
+        {
+            // Arrange
+            var utilisateurService = new Mock<IUtilisateurService>();
+            var validator = new Mock<IValidator<AjoutUtilisateurRequeteDTO>>();
+            var logger = Mock.Of<ILogger<UtilisateurControleur>>();
+            var configuration = new Mock<IConfiguration>();
+
+            var invalidRequest = new AjoutUtilisateurRequeteDTO(); // Request avec des données invalides
+
+            var validationResult = new FluentValidation.Results.ValidationResult(new List<FluentValidation.Results.ValidationFailure>
+    {
+        new FluentValidation.Results.ValidationFailure("NomUtilisateur", "Le nom est requis.")
+    });
+
+            validator.Setup(v => v.ValidateAsync(invalidRequest, It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(validationResult);
+
+            var controller = new UtilisateurControleur(logger, utilisateurService.Object, validator.Object, null, configuration.Object);
+
+            // Act
+            var result = await controller.AjouterUtilisateur(invalidRequest, validator.Object);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            var problemDetails = Assert.IsType<ValidationProblemDetails>(badRequestResult.Value);
+            Assert.Contains("NomUtilisateur", problemDetails.Errors.Keys);
+        }
+
+        [Fact]
+        public async Task AjouterUtilisateur_ServiceFails_ShouldReturnBadRequest()
+        {
+            // Arrange
+            var utilisateurService = new Mock<IUtilisateurService>();
+            var validator = new Mock<IValidator<AjoutUtilisateurRequeteDTO>>();
+            var logger = Mock.Of<ILogger<UtilisateurControleur>>();
+            var configuration = new Mock<IConfiguration>();
+
+            var validRequest = new AjoutUtilisateurRequeteDTO
+            {
+                IdUtilisateur = 1,
+                NomUtilisateur = "Doe",
+                PrenomUtilisateur = "John",
+                PseudoUtilisateur = "johndoe",
+                EmailUtilisateur = "johndoe@example.com",
+                MotDePasse = "password123",
+                Adresse1 = "123 Main St",
+                CodePostal = "12345",
+                Ville = "Paris",
+                NbJetons = 5,
+                Administrateur = 0,
+                EstSupprimer = 0
+            };
+
+            validator.Setup(v => v.ValidateAsync(validRequest, It.IsAny<CancellationToken>()))
+                     .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
+            utilisateurService.Setup(s => s.AjouterUtilisateurAsync(It.IsAny<Utilisateur>()))
+                              .ReturnsAsync(null as Utilisateur);
+
+            var controller = new UtilisateurControleur(logger, utilisateurService.Object, validator.Object, null, configuration.Object);
+
+            // Act
+            var result = await controller.AjouterUtilisateur(validRequest, validator.Object);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result); // Si l'ajout échoue, retourne BadRequest
+        }
+
 
     }
 }

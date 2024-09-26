@@ -203,7 +203,7 @@ namespace APIBoiteALivre.Filtre
             var details = new ProblemDetails()
             {
                 Detail = exception?.Message,
-                Title = "L'utilisateur que vous voulez ajouter existe déjà.",
+                Title = "Echec de l'authentification.",
                 Status = StatusCodes.Status400BadRequest,
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
             };
