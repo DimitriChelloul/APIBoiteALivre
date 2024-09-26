@@ -51,9 +51,11 @@ namespace DAL.Repertoire.Implementations.MariaDB
 
         public async Task<IEnumerable<LivreReponseDTO>> RecupererTousLesLivresAsync()
         {
-            string query = "SELECT L.* , E.IdExemplaire " +
-                " FROM Livre L " +
-                "JOIN Exemplaire E on L.ISBN = E.ISBN;";
+            string query = "SELECT L.ISBN, L.TitreLivre, L.ResumeLivre, L.DatePublicationLivre, L.IdEditeur, L.IdCategorie, L.Photo, " +
+               "E.IdExemplaire, UE.IdUtilisateur as IdProprietaire " +
+               "FROM Livre L " +
+               "JOIN Exemplaire E on L.ISBN = E.ISBN " +
+               "JOIN Utilisateur_Exemplaire UE on E.IdExemplaire = UE.IdExemplaire;";
 
             return await _session.Connection.QueryAsync<LivreReponseDTO>(query);
         }

@@ -16,5 +16,6 @@ namespace Domain.DTO.Historique.Reponse
         public int IdEditeur { get; set; }
         public int IdCategorie { get; set; }
         public string? Photo { get; set; }
+        public int IdProprietaire { get; set; }
     }
 }

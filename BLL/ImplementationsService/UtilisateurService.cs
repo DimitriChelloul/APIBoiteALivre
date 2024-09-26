@@ -52,7 +52,7 @@ namespace BLL.ImplementationsService
         {
             // Récupérer l'utilisateur par son email
             Utilisateur utilisateur = await _db.Utilisateurs.AuthentifierUtilisateurAsync(email);
-
+            
             return utilisateur;
         }
 
@@ -91,11 +91,7 @@ namespace BLL.ImplementationsService
 
             return tokenHandler.WriteToken(token);
 
-
         }
-
-
-
     }
 }
     

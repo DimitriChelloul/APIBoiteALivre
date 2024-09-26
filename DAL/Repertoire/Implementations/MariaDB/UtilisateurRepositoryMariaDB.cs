@@ -101,6 +101,12 @@ namespace DAL.Repertoire.Implementations.MariaDB
            
            var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { Email = email});
 
+            if(utilisateur == null)
+            {
+                throw new AuthentificationException(email);
+            }
+
+
             return utilisateur;
         }
 
