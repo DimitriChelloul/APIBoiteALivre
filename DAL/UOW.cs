@@ -15,7 +15,8 @@ namespace DAL
     {
         //MySQL | MariaDB   
             { typeof(IUtilisateurRepository), typeof(UtilisateurRepositoryMariaDB) },
-            { typeof(IHistoriqueRepository), typeof(HistoriqueRepositoryMariaDB) }
+            { typeof(IHistoriqueRepository), typeof(HistoriqueRepositoryMariaDB) },
+            { typeof(ISecurityRepository), typeof(SecurityRepositoryMariaDB) }
     };
 
 
@@ -41,6 +42,8 @@ namespace DAL
 
         public IHistoriqueRepository Historique => Activator.CreateInstance(_currentRepositories[typeof(IHistoriqueRepository)], _dbSession) as IHistoriqueRepository;
 
+        public ISecurityRepository Security => Activator.CreateInstance(_currentRepositories[typeof(ISecurityRepository)], _dbSession) as ISecurityRepository;
+
         //    //... Add your repositories here
 
 
@@ -50,6 +53,8 @@ namespace DAL
         public IUtilisateurRepository Utilisateurs => new UtilisateurRepositoryMariaDB(_dbSession);
 
         public IHistoriqueRepository Historiques => new HistoriqueRepositoryMariaDB(_dbSession);
+
+        public ISecurityRepository Secu => new SecurityRepositoryMariaDB(_dbSession);
 
         public void BeginTransaction()
         {

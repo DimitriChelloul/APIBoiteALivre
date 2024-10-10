@@ -1,9 +1,7 @@
 ﻿using BLL.InterfacesService;
 using Microsoft.AspNetCore.Mvc;
-using BLL;
-using Domain.Entites;
-using MySqlX.XDevAPI.Common;
 using Domain.DTO.Historique.Reponse;
+using Microsoft.AspNetCore.Authorization;
 
 namespace APIBoiteALivre.Controllers
 {
@@ -25,6 +23,7 @@ namespace APIBoiteALivre.Controllers
 
 
         [HttpGet("books/{idExemplaire}")]
+        [Authorize]
         public async Task<IActionResult> RecupHistoriqueExemplaire(int idExemplaire, DateTime DateDebut, DateTime DateFin)
         {
 
@@ -35,6 +34,7 @@ namespace APIBoiteALivre.Controllers
         }
 
         [HttpGet("books")]
+        [Authorize]
         public async Task<IActionResult> RecupererLivresAsync()
         {
             try
@@ -49,6 +49,13 @@ namespace APIBoiteALivre.Controllers
             }
         }
 
+        [HttpGet("books/proprio/{idProprietaire}")]
+        [Authorize]
+        public async Task<IActionResult> RecupererLivresDUnUtilisateur(int idProprietaire)
+        {
+            IEnumerable<LivreReponseDTO> LivresDUnUtilisateur = await _historiqueService.ListeLivreDUnUtilisateur(idProprietaire);
 
+            return Ok(LivresDUnUtilisateur);
+        }
     }
 }

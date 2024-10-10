@@ -3,11 +3,6 @@ using DAL.Session;
 using Dapper;
 using Domain.Entites;
 using Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL.Repertoire.Implementations.MariaDB
 {
@@ -95,20 +90,20 @@ namespace DAL.Repertoire.Implementations.MariaDB
             
         }
 
-        public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
-        {
-            string query = @"SELECT * FROM Utilisateur WHERE EmailUtilisateur = @Email AND EstSupprimer = 0;";
+        //public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
+        //{
+        //    string query = @"SELECT * FROM Utilisateur WHERE EmailUtilisateur = @Email AND EstSupprimer = 0;";
            
-           var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { Email = email});
+        //   var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { Email = email});
 
-            if(utilisateur == null)
-            {
-                throw new AuthentificationException(email);
-            }
+        //    if(utilisateur == null)
+        //    {
+        //        throw new AuthentificationException(email);
+        //    }
 
 
-            return utilisateur;
-        }
+        //    return utilisateur;
+        //}
 
     }
 }

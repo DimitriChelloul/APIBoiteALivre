@@ -26,5 +26,12 @@ namespace DAL.Repertoire.Interfaces
         /// </summary>
         /// <returns>Liste de tous les livres</returns>
         Task<IEnumerable<LivreReponseDTO>> RecupererTousLesLivresAsync();
+
+        /// <summary>
+        /// Recupere la liste de tous les livres ajouter par un utilisateur
+        /// </summary>
+        /// <param name="idProprietaire"></param>
+        /// <returns>La liste de tous les livres ajouter par un utilisateur</returns>
+        Task<IEnumerable<LivreReponseDTO>> ListeLivreDUnUtilisateurAsync(int idProprietaire);
     }
 }

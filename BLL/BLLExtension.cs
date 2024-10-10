@@ -1,12 +1,7 @@
 ﻿using BLL.ImplementationsService;
 using BLL.InterfacesService;
-using DAL;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BLL
 {
@@ -33,6 +28,7 @@ namespace BLL
 
             services.AddTransient<IUtilisateurService, UtilisateurService>();
             services.AddTransient<IHistoriqueService, HistoriqueService>();
+            services.AddTransient<ISecurityService, SecurityService>();
 
 
             return services;

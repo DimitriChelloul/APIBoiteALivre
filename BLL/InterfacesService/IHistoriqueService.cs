@@ -19,5 +19,12 @@ namespace BLL.InterfacesService
         /// </summary>
         /// <returns>Une liste de livre</returns>
         Task<IEnumerable<LivreReponseDTO>> RecupererTousLesLivresAsync();
+
+        /// <summary>
+        /// recupere la liste de tous les livres ajouter par un utilisateur
+        /// </summary>
+        /// <param name="idProprietaire"></param>
+        /// <returns>la liste de tous les livres ajouter par un utilisateur</returns>
+        Task<IEnumerable<LivreReponseDTO>> ListeLivreDUnUtilisateur(int idProprietaire);
     }
 }

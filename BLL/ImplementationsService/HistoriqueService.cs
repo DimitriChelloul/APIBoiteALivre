@@ -1,8 +1,7 @@
 ﻿using BLL.InterfacesService;
 using DAL;
-using DAL.Repertoire.Interfaces;
 using Domain.DTO.Historique.Reponse;
-using Domain.Entites;
+
 
 namespace BLL.ImplementationsService
 {
@@ -24,6 +23,12 @@ namespace BLL.ImplementationsService
         {
             return await _db.Historiques.RecupererTousLesLivresAsync();
         }
+
+        public async Task<IEnumerable<LivreReponseDTO>> ListeLivreDUnUtilisateur(int idProprietaire)
+        {
+            return await _db.Historiques.ListeLivreDUnUtilisateurAsync(idProprietaire);
+        }
+
 
     }
 }

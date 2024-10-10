@@ -5,9 +5,6 @@ using Domain.Entites;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace APIBoiteALivre.Controllers
 {
@@ -25,7 +22,8 @@ namespace APIBoiteALivre.Controllers
             ILogger<UtilisateurControleur> logger,
             IUtilisateurService utilisateurService,
             IValidator<AjoutUtilisateurRequeteDTO> ajoutUtilisateurValidator,
-            IValidator<ModificationUtilisateurRequete> modificationUtilisateurValidator, IConfiguration configuration)
+            IValidator<ModificationUtilisateurRequete> modificationUtilisateurValidator,
+            IConfiguration configuration)
         {
             _logger = logger;
             _utilisateurService = utilisateurService;
@@ -62,11 +60,13 @@ namespace APIBoiteALivre.Controllers
         }
 
         [HttpPost("utilisateurs")]
+        [Authorize(Roles = "administrateur")]
         public async Task<IActionResult> AjouterUtilisateur([FromBody] AjoutUtilisateurRequeteDTO requete, IValidator<AjoutUtilisateurRequeteDTO> validator)
         {
 
             // I) Verify the request
             FluentValidation.Results.ValidationResult validationResult = await _ajoutUtilisateurValidator.ValidateAsync(requete);
+
             if (!validationResult.IsValid)
             {
                 ValidationProblemDetails problemDetails = new(validationResult.ToDictionary())
@@ -81,7 +81,7 @@ namespace APIBoiteALivre.Controllers
             
             Utilisateur utilisateur = new Utilisateur()
             {
-                IdUtilisateur = requete.IdUtilisateur,
+                //IdUtilisateur = requete.IdUtilisateur,
                 Administrateur = requete.Administrateur,
                 NomUtilisateur = requete.NomUtilisateur,
                 PrenomUtilisateur = requete.PrenomUtilisateur,
@@ -126,9 +126,11 @@ namespace APIBoiteALivre.Controllers
         }
 
         [HttpPut("utilisateurs/{idUtilisateur}")]
+        [Authorize(Roles = "administrateur")]
         public async Task<IActionResult> ModifyUtilisateur([FromRoute] int idUtilisateur, [FromBody] ModificationUtilisateurRequete requete, IValidator<ModificationUtilisateurRequete> validator)
         {
             FluentValidation.Results.ValidationResult validationResult = await _modificationUtilisateurValidator.ValidateAsync(requete);
+
             if (!validationResult.IsValid)
             {
                 ValidationProblemDetails problemDetails = new(validationResult.ToDictionary())
@@ -143,7 +145,7 @@ namespace APIBoiteALivre.Controllers
 
             Utilisateur utilisateur = new Utilisateur()
             {
-                IdUtilisateur = requete.IdUtilisateur,
+                IdUtilisateur = idUtilisateur,
                 Administrateur = requete.Administrateur,
                 NomUtilisateur = requete.NomUtilisateur,
                 PrenomUtilisateur = requete.PrenomUtilisateur,
@@ -170,7 +172,7 @@ namespace APIBoiteALivre.Controllers
             //Créer ma réponse oK
             ModificationUtilisateurReponseDTO reponse = new ModificationUtilisateurReponseDTO()
             {
-                IdUtilisateur = utilisateurModifie.IdUtilisateur,
+                //IdUtilisateur = utilisateurModifie.IdUtilisateur,
                 Administrateur = utilisateurModifie.Administrateur,
                 NomUtilisateur = utilisateurModifie.NomUtilisateur,
                 PrenomUtilisateur = utilisateurModifie.PrenomUtilisateur,
@@ -190,27 +192,10 @@ namespace APIBoiteALivre.Controllers
             return new OkObjectResult(reponse) { StatusCode = 201 };
         }
 
-        //[HttpPatch("utilisateur/{idUtilisateur}/supprimer")]
-        //public async Task<IActionResult> MarquerUtilisateurCommeSupprimer(int idUtilisateur)
-        //{
-        //    try
-        //    {
-        //        // Appel à la méthode du service pour marquer l'utilisateur comme supprimé
-        //        await _utilisateurService.MarquerUtilisateurCommeSupprimerAsync(idUtilisateur);
-
-        //        // Si tout se passe bien, renvoyer une réponse 204 No Content (utilisateur marqué comme supprimé avec succès)
-        //        return NoContent();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Erreur lors de la suppression de l'utilisateur avec Id {IdUtilisateur}", idUtilisateur);
-
-        //        // Si une exception survient, renvoyer une erreur 500 (ou une erreur spécifique selon le type d'erreur)
-        //        return StatusCode(500, "Erreur interne du serveur : " + ex.Message);
-        //    }
-        //}
+     
 
         [HttpPut("utilisateurs/supprimer/{idUtilisateur}")]
+        [Authorize(Roles = "administrateur")]
         public async Task<IActionResult> MarquerUtilisateurCommeSupprimer(int idUtilisateur)
         {
 
@@ -222,65 +207,65 @@ namespace APIBoiteALivre.Controllers
         }
 
         ////Authentifier un utilisateur(accessible à tous)
-        [HttpPost("authentification")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Authentifier([FromBody] AuthentificationDTORequete requete, [FromServices] AuthentificationDTORequetevalidator validator)
-        {
+        //[HttpPost("authentification")]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Authentifier([FromBody] AuthentificationDTORequete requete, [FromServices] AuthentificationDTORequetevalidator validator)
+        //{
 
-            var badRequest = await ValiderRequete(requete, validator);
+        //    var badRequest = await ValiderRequete(requete, validator);
 
-            if (badRequest is not null)
-                return badRequest;
+        //    if (badRequest is not null)
+        //        return badRequest;
 
-            var utilisateur = await _utilisateurService.AuthentifierUtilisateurAsync(requete.emailUtilisateur);
-            if (utilisateur == null)
-                return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+        //    var utilisateur = await _utilisateurService.AuthentifierUtilisateurAsync(requete.emailUtilisateur);
+        //    if (utilisateur == null)
+        //        return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
-            // Vérifier le mot de passe avec BCrypt
-            if (!BCrypt.Net.BCrypt.Verify(requete.motDePasse, utilisateur.MotDePasse))
-                return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+        //    // Vérifier le mot de passe avec BCrypt
+        //    if (!BCrypt.Net.BCrypt.Verify(requete.motDePasse, utilisateur.MotDePasse))
+        //        return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
-            // Gérer ici la génération du token JWT
-            var token = GenererTokenJWT(utilisateur);
+        //    // Gérer ici la génération du token JWT
+        //    var token = GenererTokenJWT(utilisateur);
 
-            return Ok(new { access_token = token });
-        }
+        //    return Ok(new { access_token = token });
+        //}
 
-        //// Génération du token JWT
-        private string GenererTokenJWT(Utilisateur utilisateur)
-        {
+        ////// Génération du token JWT
+        //private string GenererTokenJWT(Utilisateur utilisateur)
+        //{
 
-            // Info utilisateur
-            var claims = new Dictionary<string, Object>()
-            {
-                [ClaimTypes.NameIdentifier] = utilisateur.NomUtilisateur.ToString(),
-                [JwtRegisteredClaimNames.Jti] = Guid.NewGuid().ToString(),
-                [ClaimTypes.Email] = utilisateur.EmailUtilisateur,
-                [ClaimTypes.Role] = utilisateur.Administrateur == 1 ? "administrateur" : "utilisateur"
-            };
+        //    // Info utilisateur
+        //    var claims = new Dictionary<string, Object>()
+        //    {
+        //        [ClaimTypes.NameIdentifier] = utilisateur.NomUtilisateur.ToString(),
+        //        [JwtRegisteredClaimNames.Jti] = Guid.NewGuid().ToString(),
+        //        [ClaimTypes.Email] = utilisateur.EmailUtilisateur,
+        //        [ClaimTypes.Role] = utilisateur.Administrateur == 1 ? "administrateur" : "utilisateur"
+        //    };
 
 
 
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWTSecret"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        //    var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JWTSecret"]));
+        //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var expires = DateTime.Now.AddHours(1);
+        //    var expires = DateTime.Now.AddHours(1);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Issuer = _configuration["JWTIssuer"],
-                Audience = _configuration["JWTAudience"],
-                Claims = claims,
-                Expires = expires,
-                SigningCredentials = creds
-            };
+        //    var tokenDescriptor = new SecurityTokenDescriptor
+        //    {
+        //        Issuer = _configuration["JWTIssuer"],
+        //        Audience = _configuration["JWTAudience"],
+        //        Claims = claims,
+        //        Expires = expires,
+        //        SigningCredentials = creds
+        //    };
 
-            // Générer et retourner le token JWT
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+        //    // Générer et retourner le token JWT
+        //    var tokenHandler = new JwtSecurityTokenHandler();
+        //    var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+        //    return tokenHandler.WriteToken(token);
 
-        }
+        //}
     }
 }

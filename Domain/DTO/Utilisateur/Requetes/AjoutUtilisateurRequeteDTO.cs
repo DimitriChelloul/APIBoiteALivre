@@ -4,7 +4,7 @@ namespace Domain.DTO.Utilisateur.Requetes
 {
     public class AjoutUtilisateurRequeteDTO
     {
-        public int IdUtilisateur { get; set; }
+        //public int IdUtilisateur { get; set; }
         public int Administrateur { get; set; }
         public string NomUtilisateur { get; set; }
         public string PrenomUtilisateur { get; set; }

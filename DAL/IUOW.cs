@@ -1,9 +1,4 @@
 ﻿using DAL.Repertoire.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DAL
 {
@@ -29,6 +24,7 @@ namespace DAL
         IUtilisateurRepository Utilisateurs { get; }
         IHistoriqueRepository Historiques { get; }
 
+        ISecurityRepository Security {  get; }
 
         #endregion
     }

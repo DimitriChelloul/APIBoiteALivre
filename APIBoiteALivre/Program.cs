@@ -7,10 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Builder;
-using Swashbuckle.AspNetCore.Swagger;
-using FluentValidation.AspNetCore;
-using Microsoft.Extensions.DependencyInjection;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using APIBoiteALivre.Filtre;
 
@@ -31,6 +27,7 @@ builder.Services.AddControllers(options =>
 //Add the FluentValidators in the IOC
 builder.Services.AddValidatorsFromAssemblyContaining<AjoutUtilisateurRequeteDTOValidateur>();
 builder.Services.AddValidatorsFromAssemblyContaining<ModificationUtilisateurRequeteValidateur>();
+builder.Services.AddValidatorsFromAssemblyContaining<AuthentificationDTORequetevalidator>();
 
 builder.Services.AddBLL(options => { });
 
@@ -131,3 +128,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

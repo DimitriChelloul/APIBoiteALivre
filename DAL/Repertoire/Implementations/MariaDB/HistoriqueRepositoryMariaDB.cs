@@ -1,8 +1,6 @@
 ﻿using DAL.Repertoire.Interfaces;
 using DAL.Session;
-using Domain.Entites;
 using Dapper;
-using System.Data.Common;
 using Domain.Exceptions;
 using Domain.DTO.Historique.Reponse;
 
@@ -58,6 +56,27 @@ namespace DAL.Repertoire.Implementations.MariaDB
                "JOIN Utilisateur_Exemplaire UE on E.IdExemplaire = UE.IdExemplaire;";
 
             return await _session.Connection.QueryAsync<LivreReponseDTO>(query);
+        }
+
+
+        public async Task<IEnumerable<LivreReponseDTO>> ListeLivreDUnUtilisateurAsync(int idProprietaire)
+        {
+            string query = @"SELECT L.ISBN, L.TitreLivre, L.ResumeLivre, L.DatePublicationLivre, L.IdEditeur, L.IdCategorie, L.Photo,
+               E.IdExemplaire, UE.IdUtilisateur as IdProprietaire
+               FROM Livre L 
+               JOIN Exemplaire E on L.ISBN = E.ISBN 
+               JOIN Utilisateur_Exemplaire UE on E.IdExemplaire = UE.IdExemplaire 
+               WHERE UE.IdUtilisateur = @IdUtilisateur;";
+
+            IEnumerable<LivreReponseDTO> listeLivreProprio = await _session.Connection.QueryAsync<LivreReponseDTO>(
+               query,
+               new
+               {
+                   IdUtilisateur = idProprietaire
+               }
+           );
+
+            return listeLivreProprio;
         }
     }
 }

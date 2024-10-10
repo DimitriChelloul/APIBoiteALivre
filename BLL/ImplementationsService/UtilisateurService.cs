@@ -1,11 +1,8 @@
 ﻿using BLL.InterfacesService;
 using DAL;
-using DAL.Repertoire.Interfaces;
 using Domain.Entites;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+
 
 
 
@@ -48,13 +45,13 @@ namespace BLL.ImplementationsService
             await _db.Utilisateurs.MarquerUtilisateurCommeSupprimerAsync(idUtilisateur);
         }
 
-        public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
-        {
-            // Récupérer l'utilisateur par son email
-            Utilisateur utilisateur = await _db.Utilisateurs.AuthentifierUtilisateurAsync(email);
+        //public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
+        //{
+        //    // Récupérer l'utilisateur par son email
+        //    Utilisateur utilisateur = await _db.Utilisateurs.AuthentifierUtilisateurAsync(email);
            
-            return utilisateur;
-        }
+        //    return utilisateur;
+        //}
 
        
     }

@@ -182,7 +182,7 @@ namespace Tests.TestUnitaires
 
             var validRequest = new AjoutUtilisateurRequeteDTO
             {
-                IdUtilisateur = 1,
+                //IdUtilisateur = 1,
                 NomUtilisateur = "Doe",
                 PrenomUtilisateur = "John",
                 PseudoUtilisateur = "johndoe",
@@ -257,7 +257,7 @@ namespace Tests.TestUnitaires
 
             var validRequest = new AjoutUtilisateurRequeteDTO
             {
-                IdUtilisateur = 1,
+                //IdUtilisateur = 1,
                 NomUtilisateur = "Doe",
                 PrenomUtilisateur = "John",
                 PseudoUtilisateur = "johndoe",

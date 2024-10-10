@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL.Repertoire.Implementations.MariaDB;
-using DAL.Repertoire.Interfaces;
-using DAL.Session;
-using Google.Protobuf.WellKnownTypes;
+﻿using DAL.Session;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DAL
