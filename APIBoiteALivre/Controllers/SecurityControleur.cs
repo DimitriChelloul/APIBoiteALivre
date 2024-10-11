@@ -56,6 +56,30 @@ namespace APIBoiteALivre.Controllers
             return Ok(new { access_token = token });
         }
 
+        [HttpPost("authentificationSwagger")]
+        [AllowAnonymous]
+        public async Task<IActionResult> AuthentifierSwagger([FromForm] AuthentificationDTORequete requete, [FromServices] AuthentificationDTORequetevalidator validator)
+        {
+
+            var badRequest = await ValiderRequete(requete, validator);
+
+            if (badRequest is not null)
+                return badRequest;
+
+            var utilisateur = await _securityService.AuthentifierUtilisateurAsync(requete.emailUtilisateur);
+            if (utilisateur == null)
+                return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+
+            // Vérifier le mot de passe avec BCrypt
+            if (!BCrypt.Net.BCrypt.Verify(requete.motDePasse, utilisateur.MotDePasse))
+                return Unauthorized(new { message = "Email ou mot de passe incorrect." });
+
+            // Gérer ici la génération du token JWT
+            var token = GenererTokenJWT(utilisateur);
+
+            return Ok(new { access_token = token });
+        }
+
         //// Génération du token JWT
         private string GenererTokenJWT(Utilisateur utilisateur)
         {
