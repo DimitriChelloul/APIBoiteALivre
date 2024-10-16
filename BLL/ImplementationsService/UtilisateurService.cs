@@ -2,13 +2,12 @@
 using DAL;
 using Domain.Entites;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.CompilerServices;
 
-
-
-
+[assembly: InternalsVisibleTo("TestsUnitaire.TestUnitaires")]
 namespace BLL.ImplementationsService
 {
-    internal class UtilisateurService : IUtilisateurService
+    public class UtilisateurService : IUtilisateurService
     {
         private readonly IUOW _db;
         public IConfiguration _configuration { get; }

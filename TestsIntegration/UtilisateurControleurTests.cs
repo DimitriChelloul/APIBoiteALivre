@@ -24,7 +24,7 @@ namespace TestsIntegration
             int idExemplaire = 33;
             DateTime dateDebut = new DateTime(2024, 1, 1);
             DateTime dateFin = new DateTime(2024, 9, 30);
-
+            await LogIn("psychospartiat@gmail.com", "bagaloo");
             // Act
             var response = await _client.GetAsync($"/APIBoiteALivre/books/{idExemplaire}?DateDebut={dateDebut:yyyy-MM-ddTHH:mm:ss}&DateFin={dateFin:yyyy-MM-ddTHH:mm:ss}");
             response.EnsureSuccessStatusCode(); 
@@ -34,12 +34,17 @@ namespace TestsIntegration
 
             // Assert
             Assert.NotNull(historique);
-            Assert.NotEmpty(historique); 
+            Assert.NotEmpty(historique);
+
         }
 
         [Fact]
         public async Task RecupererLivresAsync_Ok()
         {
+
+            // Arrange
+            await LogIn("psychospartiat@gmail.com", "bagaloo");
+
             // Act
             var response = await _client.GetAsync("/APIBoiteALivre/books");
             response.EnsureSuccessStatusCode(); 
@@ -55,6 +60,10 @@ namespace TestsIntegration
         [Fact]
         public async Task RecupererUtilisateur_RetourneListeUtilisateurs_Ok()
         {
+
+            // Arrange
+            await LogIn("psychospartiat@gmail.com", "bagaloo");
+
             // Act
             var response = await _client.GetAsync("/APIBoiteALivre/utilisateurs");
             response.EnsureSuccessStatusCode(); 
@@ -70,7 +79,8 @@ namespace TestsIntegration
         public async Task MarquerUtilisateurCommeSupprimer_IdValide_NoContent()
         {
             // Arrange
-            int idUtilisateur = 1; 
+            int idUtilisateur = 1;
+            await LogIn("psychospartiat@gmail.com", "bagaloo");
 
             // Act
             var response = await _client.PutAsync($"/APIBoiteALivre/utilisateurs/supprimer/{idUtilisateur}", null);
@@ -103,13 +113,15 @@ namespace TestsIntegration
         public async Task AjouterUtilisateur_DonneesValides_RetourneUtilisateurAjoute()
         {
             // Arrange
+            await LogIn("psychospartiat@gmail.com", "bagaloo");
+
             var ajoutUtilisateurRequete = new AjoutUtilisateurRequeteDTO
             {
                 Administrateur = 0,
                 NomUtilisateur = "Doe",
                 PrenomUtilisateur = "John",
                 PseudoUtilisateur = "johndoe",
-                EmailUtilisateur = "johndoe@example.com",
+                EmailUtilisateur = "jackiedoe@example.com",
                 MotDePasse = "password123",
                 Adresse1 = "123 Main St",
                 Adresse2 = "Apt 4B",
@@ -118,7 +130,6 @@ namespace TestsIntegration
                 NbJetons = 5,
                 EstSupprimer = 0
             };
-
             // Act
             var response = await _client.PostAsJsonAsync("/APIBoiteALivre/utilisateurs", ajoutUtilisateurRequete);
 
@@ -127,13 +138,17 @@ namespace TestsIntegration
             var utilisateurAjoute = await response.Content.ReadFromJsonAsync<AjoutUtilisateurReponseDTO>();
             Assert.NotNull(utilisateurAjoute);
             Assert.Equal(ajoutUtilisateurRequete.EmailUtilisateur, utilisateurAjoute.EmailUtilisateur);
+
+            // nettoyage
+            await _client.DeleteAsync($"/APIBoiteALivre/utilisateurs/supprimer/{utilisateurAjoute.IdUtilisateur}");
         }
 
         [Fact]
         public async Task ModifierUtilisateur_DonneesValides_RetourneUtilisateurModifie()
         {
             // Arrange
-            int idUtilisateur = 1; 
+            int idUtilisateur = 1;
+            await LogIn("psychospartiat@gmail.com", "bagaloo");
 
             var ancienneinfo = _client.GetAsync($"/APIBoiteALivre/utilisateurs/{idUtilisateur}");
 

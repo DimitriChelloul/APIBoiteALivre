@@ -53,7 +53,7 @@ namespace APIBoiteALivre.Controllers
             // Gérer ici la génération du token JWT
             var token = GenererTokenJWT(utilisateur);
 
-            return Ok(new { access_token = token });
+            return Ok(new { utilisateur.IdUtilisateur, access_token = token });
         }
 
         [HttpPost("authentificationSwagger")]

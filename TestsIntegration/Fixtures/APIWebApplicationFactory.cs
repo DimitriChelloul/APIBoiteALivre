@@ -26,9 +26,7 @@ namespace TestsIntegration.Fixtures
                 .AddJsonFile("appsettings.Integrations.json")
                 .Build();
                 config.AddConfiguration(Configuration);
-            });
-
-           
+            });  
         }
       
 
