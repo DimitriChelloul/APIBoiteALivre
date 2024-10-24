@@ -46,11 +46,11 @@ namespace APIBoiteALivre.Controllers
             if (utilisateur == null)
                 return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
-            // Vérifier le mot de passe avec BCrypt
+            // Vérifie le mot de passe avec BCrypt
             if (!BCrypt.Net.BCrypt.Verify(requete.motDePasse, utilisateur.MotDePasse))
                 return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
-            // Gérer ici la génération du token JWT
+            // Gére la génération du token JWT
             var token = GenererTokenJWT(utilisateur);
 
             return Ok(new { utilisateur.IdUtilisateur, access_token = token });
@@ -70,11 +70,11 @@ namespace APIBoiteALivre.Controllers
             if (utilisateur == null)
                 return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
-            // Vérifier le mot de passe avec BCrypt
+            // Vérifie le mot de passe avec BCrypt
             if (!BCrypt.Net.BCrypt.Verify(requete.motDePasse, utilisateur.MotDePasse))
                 return Unauthorized(new { message = "Email ou mot de passe incorrect." });
 
-            // Gérer ici la génération du token JWT
+            // Gére ici la génération du token JWT
             var token = GenererTokenJWT(utilisateur);
 
             return Ok(new { access_token = token });
@@ -116,9 +116,5 @@ namespace APIBoiteALivre.Controllers
             return tokenHandler.WriteToken(token);
 
         }
-
-
-
-
     }
 }

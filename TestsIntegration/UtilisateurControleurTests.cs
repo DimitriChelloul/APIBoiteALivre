@@ -5,6 +5,7 @@ using Domain.DTO.Utilisateur.Requetes;
 using Domain.Entites;
 using System.Net;
 using System.Net.Http.Json;
+using FluentAssertions;
 
 using TestsIntegration.Fixtures;
 
@@ -35,6 +36,8 @@ namespace TestsIntegration
             // Assert
             Assert.NotNull(historique);
             Assert.NotEmpty(historique);
+
+            response.Should().NotBeNull();
 
         }
 
@@ -139,8 +142,6 @@ namespace TestsIntegration
             Assert.NotNull(utilisateurAjoute);
             Assert.Equal(ajoutUtilisateurRequete.EmailUtilisateur, utilisateurAjoute.EmailUtilisateur);
 
-            // nettoyage
-            await _client.DeleteAsync($"/APIBoiteALivre/utilisateurs/supprimer/{utilisateurAjoute.IdUtilisateur}");
         }
 
         [Fact]

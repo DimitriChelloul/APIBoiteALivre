@@ -2,6 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Domain.DTO.Historique.Reponse;
 using Microsoft.AspNetCore.Authorization;
+using Domain.DTO.Historique.Requetes;
+using Domain.DTO.Utilisateur.Requetes;
+using FluentValidation;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.IdentityModel.Tokens;
 
 namespace APIBoiteALivre.Controllers
 {
@@ -12,11 +17,13 @@ namespace APIBoiteALivre.Controllers
     {
         private readonly ILogger<HistoriqueControleur> _logger;
         private readonly IHistoriqueService _historiqueService;
+        private readonly IValidator<HistoriqueLivreDTORequete> _historiqueLivreDTORequete;
 
-        public HistoriqueControleur(ILogger<HistoriqueControleur> logger, IHistoriqueService historiqueService)
+        public HistoriqueControleur(ILogger<HistoriqueControleur> logger, IHistoriqueService historiqueService,  IValidator<HistoriqueLivreDTORequete> historiqueLivreDTORequete)
         {
             _logger = logger;
             _historiqueService = historiqueService;
+            _historiqueLivreDTORequete = historiqueLivreDTORequete;
         }
 
 
@@ -24,12 +31,22 @@ namespace APIBoiteALivre.Controllers
 
         [HttpGet("books/{idExemplaire}")]
         [Authorize]
-        public async Task<IActionResult> RecupHistoriqueExemplaire(int idExemplaire, DateTime DateDebut, DateTime DateFin)
+        public async Task<IActionResult> RecupHistoriqueExemplaire([FromRoute] int idExemplaire, [FromQuery] DateTime dateDebut, [FromQuery] DateTime dateFin,  HistoriqueLivreDTORequeteValidateur _validator)
         {
 
-            IEnumerable<HistoriqueLivreReponseDTO> result = await _historiqueService.RecupererHistoriqueLivreAsync(idExemplaire, DateDebut, DateFin);
+            var requete = new HistoriqueLivreDTORequete
+            {
+                IdExemplaire = idExemplaire,
+                DateDebut = dateDebut,
+                DateFin = dateFin
+            };
 
+            var badRequest = await ValiderRequete(requete, _validator);
 
+            if (badRequest is not null)
+                return badRequest;
+
+            IEnumerable<HistoriqueLivreReponseDTO> result = await _historiqueService.RecupererHistoriqueLivreAsync(idExemplaire, dateDebut, dateFin);
             return Ok(result);
         }
 

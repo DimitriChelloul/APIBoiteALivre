@@ -25,6 +25,8 @@ builder.Services.AddControllers(options =>
 });
 
 //Add the FluentValidators in the IOC
+//builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
+
 builder.Services.AddValidatorsFromAssemblyContaining<AjoutUtilisateurRequeteDTOValidateur>();
 builder.Services.AddValidatorsFromAssemblyContaining<ModificationUtilisateurRequeteValidateur>();
 builder.Services.AddValidatorsFromAssemblyContaining<AuthentificationDTORequetevalidator>();

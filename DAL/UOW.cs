@@ -34,27 +34,27 @@ namespace DAL
         }
 
 
-        //#pragma warning disable CS8603 // Existence possible d'un retour de référence null Impossible or PREFER CRASH APPLICATION. 
+        
 
         //    //Permet de créer une instance par reflexion avec la classe ACTIVATOR et de retourner une instance de l'interface
-        public IUtilisateurRepository Utilisateur => Activator.CreateInstance(_currentRepositories[typeof(IUtilisateurRepository)], _dbSession) as IUtilisateurRepository;
+        public IUtilisateurRepository Utilisateurs => Activator.CreateInstance(_currentRepositories[typeof(IUtilisateurRepository)], _dbSession) as IUtilisateurRepository;
 
 
-        public IHistoriqueRepository Historique => Activator.CreateInstance(_currentRepositories[typeof(IHistoriqueRepository)], _dbSession) as IHistoriqueRepository;
+        public IHistoriqueRepository Historiques => Activator.CreateInstance(_currentRepositories[typeof(IHistoriqueRepository)], _dbSession) as IHistoriqueRepository;
 
         public ISecurityRepository Security => Activator.CreateInstance(_currentRepositories[typeof(ISecurityRepository)], _dbSession) as ISecurityRepository;
 
-        //    //... Add your repositories here
+        
 
 
-        //#pragma warning restore CS8603 // Existence possible d'un retour de référence null Impossible.
+      
 
 
-        public IUtilisateurRepository Utilisateurs => new UtilisateurRepositoryMariaDB(_dbSession);
+        //public IUtilisateurRepository Utilisateurs => new UtilisateurRepositoryMariaDB(_dbSession);
 
-        public IHistoriqueRepository Historiques => new HistoriqueRepositoryMariaDB(_dbSession);
+        //public IHistoriqueRepository Historiques => new HistoriqueRepositoryMariaDB(_dbSession);
 
-        public ISecurityRepository Secu => new SecurityRepositoryMariaDB(_dbSession);
+        //public ISecurityRepository Secu => new SecurityRepositoryMariaDB(_dbSession);
 
         public void BeginTransaction()
         {
