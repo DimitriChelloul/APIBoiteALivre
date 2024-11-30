@@ -34,7 +34,7 @@ namespace DAL
         }
 
 
-        
+
 
         //    //Permet de créer une instance par reflexion avec la classe ACTIVATOR et de retourner une instance de l'interface
         public IUtilisateurRepository Utilisateurs => Activator.CreateInstance(_currentRepositories[typeof(IUtilisateurRepository)], _dbSession) as IUtilisateurRepository;
@@ -44,10 +44,10 @@ namespace DAL
 
         public ISecurityRepository Security => Activator.CreateInstance(_currentRepositories[typeof(ISecurityRepository)], _dbSession) as ISecurityRepository;
 
-        
 
 
-      
+
+
 
 
         //public IUtilisateurRepository Utilisateurs => new UtilisateurRepositoryMariaDB(_dbSession);

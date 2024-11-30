@@ -1,8 +1,8 @@
 ﻿using DAL.Repertoire.Interfaces;
 using DAL.Session;
 using Dapper;
-using Domain.Exceptions;
 using Domain.DTO.Historique.Reponse;
+using Domain.Exceptions;
 
 namespace DAL.Repertoire.Implementations.MariaDB
 {

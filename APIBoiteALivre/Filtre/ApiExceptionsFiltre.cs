@@ -131,7 +131,7 @@ namespace APIBoiteALivre.Filtre
             };
 
             context.Result = new NotFoundObjectResult(details);
-           
+
 
             context.ExceptionHandled = true;
         }
@@ -163,7 +163,7 @@ namespace APIBoiteALivre.Filtre
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
             };
 
-            
+
             context.Result = new ObjectResult(details)
             {
                 StatusCode = StatusCodes.Status400BadRequest,

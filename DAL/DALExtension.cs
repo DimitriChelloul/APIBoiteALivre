@@ -32,7 +32,7 @@ namespace DAL
         /// </summary>
         public DBType DBType { get; set; } = DBType.MariaDB;
 
-      
+
     }
 
 
@@ -53,24 +53,15 @@ namespace DAL
         /// </returns>
         public static IServiceCollection AddDAL(this IServiceCollection services, Action<DALOptions>? configure = null)
         {
-            //Initialisation des services
-            //services.AddScoped<IDBSession>((services) =>
-            //{
-            //    return new MariaDBSession(config.ConnectionString);
-            //});
 
             DALOptions options = new();
             configure?.Invoke(options); // Invoke the configuration method if not null
-
-
 
             //// Miss configuration critical error ! (Forgot to specify the connection string)
             if (string.IsNullOrEmpty(options.ConnectionString))
             {
                 throw new SystemException("Please specify a connection string for the DAL configuration !");
             }
-
-
 
             //Register your services here
             services.AddScoped<IDBSession>((services) =>
@@ -87,14 +78,12 @@ namespace DAL
                     //  return new DBSessionOracle(options.DBConnectionString);
                     default:
                         throw new NotImplementedException();
-
-
                 }
             });
 
             //NOTE: GetRequiredService is used to get the service in the IOC that is required by the UOW (DBSession)
             services.AddTransient<IUOW, UOW>((services) => new UOW(services.GetRequiredService<IDBSession>(), options.DBType));
-            
+
             return services;
         }
     }

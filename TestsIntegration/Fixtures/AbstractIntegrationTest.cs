@@ -1,5 +1,5 @@
-﻿using Domain.DTO.Utilisateur.Requetes;
-using Domain.DTO.Utilisateur.Reponses;
+﻿using Domain.DTO.Utilisateur.Reponses;
+using Domain.DTO.Utilisateur.Requetes;
 using Domain.Exceptions;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;

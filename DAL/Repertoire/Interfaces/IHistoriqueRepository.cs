@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.DTO.Historique.Reponse;
-using Domain.Entites;
+﻿using Domain.DTO.Historique.Reponse;
 
 namespace DAL.Repertoire.Interfaces
 {
@@ -19,7 +13,7 @@ namespace DAL.Repertoire.Interfaces
         /// <returns>Historique des emprunts d un livre</returns>
         Task<IEnumerable<HistoriqueLivreReponseDTO>> RecupererHistoriqueLivreAsync(int idExemplaire, DateTime DateDebut, DateTime DateFin);
 
-        
+
 
         /// <summary>
         /// Recupere la liste de tous les livres de la base de donnée

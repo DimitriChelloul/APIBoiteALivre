@@ -78,7 +78,7 @@ namespace APIBoiteALivre.Controllers
             }
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(requete.MotDePasse);
-            
+
             Utilisateur utilisateur = new Utilisateur()
             {
                 //IdUtilisateur = requete.IdUtilisateur,
@@ -192,7 +192,7 @@ namespace APIBoiteALivre.Controllers
             return new OkObjectResult(reponse) { StatusCode = 201 };
         }
 
-     
+
 
         [HttpPut("utilisateurs/supprimer/{idUtilisateur}")]
         [Authorize(Roles = "administrateur")]
@@ -206,6 +206,6 @@ namespace APIBoiteALivre.Controllers
             return NoContent();
         }
 
-      
+
     }
 }

@@ -1,15 +1,15 @@
 using APIBoiteALivre.Controllers;
 using BLL.InterfacesService;
+using Domain.DTO.Utilisateur.Reponse;
+using Domain.DTO.Utilisateur.Requetes;
+using Domain.Entites;
+using Domain.Exceptions;
+using FluentAssertions;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Microsoft.AspNetCore.Mvc;
-using Domain.Entites;
-using FluentAssertions;
-using Domain.Exceptions;
-using Domain.DTO.Utilisateur.Requetes;
-using Domain.DTO.Utilisateur.Reponse;
-using Microsoft.Extensions.Configuration;
 
 namespace Tests.TestUnitaires
 {

@@ -9,7 +9,7 @@ namespace TestsIntegration.Fixtures
 
         public IConfiguration Configuration { get; set; }
 
-        public APIWebApplicationFactory():base()
+        public APIWebApplicationFactory() : base()
         {
             //Creer base de données
         }
@@ -26,9 +26,9 @@ namespace TestsIntegration.Fixtures
                 .AddJsonFile("appsettings.Integrations.json")
                 .Build();
                 config.AddConfiguration(Configuration);
-            });  
+            });
         }
-      
+
 
         protected override void Dispose(bool disposing)
         {

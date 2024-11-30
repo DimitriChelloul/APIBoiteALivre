@@ -1,4 +1,4 @@
-@APIBoiteALivre_HostAddress = http://localhost:5229
+@APIBoiteALivre_HostAddress = http://localhost:8089
 
 GET {{APIBoiteALivre_HostAddress}}/weatherforecast/
 Accept: application/json

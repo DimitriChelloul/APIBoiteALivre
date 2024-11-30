@@ -30,7 +30,7 @@ namespace BLL.ImplementationsService
 
         public async Task<Utilisateur> AjouterUtilisateurAsync(Utilisateur utilisateur)
         {
-          
+
             return await _db.Utilisateurs.AjouterUtilisateurAsync(utilisateur);
         }
 
@@ -48,14 +48,14 @@ namespace BLL.ImplementationsService
         //{
         //    // Récupérer l'utilisateur par son email
         //    Utilisateur utilisateur = await _db.Utilisateurs.AuthentifierUtilisateurAsync(email);
-           
+
         //    return utilisateur;
         //}
 
-       
+
     }
 }
-    
-    
+
+
 
 

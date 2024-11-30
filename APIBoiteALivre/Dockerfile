@@ -1,28 +1,27 @@
-# Consultez https://aka.ms/customizecontainer pour savoir comment personnaliser votre conteneur de débogage et comment Visual Studio utilise ce Dockerfile pour générer vos images afin d’accélérer le débogage.
-
-# Cet index est utilisé lors de l’exécution à partir de VS en mode rapide (par défaut pour la configuration de débogage)
+﻿# Utilisez une image de base officielle comme point de départ
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 80
 
-
-# Cette phase est utilisée pour générer le projet de service
+# Utilisez l'image SDK pour construire l'application
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+RUN echo ls
+# Copiez le fichier .csproj et restaurez les dépendances
 COPY ["APIBoiteALivre/APIBoiteALivre.csproj", "APIBoiteALivre/"]
-RUN dotnet restore "./APIBoiteALivre/APIBoiteALivre.csproj"
+RUN dotnet restore "APIBoiteALivre/APIBoiteALivre.csproj"
+
+# Copiez le reste du code et construisez l'application
 COPY . .
 WORKDIR "/src/APIBoiteALivre"
-RUN dotnet build "./APIBoiteALivre.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "APIBoiteALivre.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Cette étape permet de publier le projet de service à copier dans la phase finale
+# Publiez l'application
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./APIBoiteALivre.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "APIBoiteALivre.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 
-# Cette phase est utilisée en production ou lors de l’exécution à partir de VS en mode normal (par défaut quand la configuration de débogage n’est pas utilisée)
+# Construisez l'image runtime
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

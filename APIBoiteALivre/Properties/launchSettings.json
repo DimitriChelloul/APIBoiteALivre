@@ -23,7 +23,11 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/weatherforecast",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8089",
+        "DbServer": "db",
+        "DbUser": "root",
+        "DbPassWord": "example",
+        "DbPort": "3306"
       },
       "publishAllPorts": true,
       "useSSL": false

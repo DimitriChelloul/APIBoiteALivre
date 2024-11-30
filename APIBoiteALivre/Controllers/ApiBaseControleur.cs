@@ -7,10 +7,10 @@ namespace APIBoiteALivre.Controllers
 {
     public abstract class ApiBaseControleur : ControllerBase
     {
-        protected async Task<BadRequestObjectResult> ValiderRequete<R, V>(R requete, V validator)where V : AbstractValidator<R>
+        protected async Task<BadRequestObjectResult> ValiderRequete<R, V>(R requete, V validator) where V : AbstractValidator<R>
         {
             ValidationResult validationResult = await validator.ValidateAsync(requete);
-            if(!validationResult.IsValid)
+            if (!validationResult.IsValid)
             {
                 ValidationProblemDetails problemDetails = new(validationResult.ToDictionary())
                 {

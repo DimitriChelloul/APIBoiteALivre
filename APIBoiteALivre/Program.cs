@@ -1,14 +1,14 @@
+using APIBoiteALivre.Filtre;
 using BLL;
 using DAL;
 using Domain.DTO.Utilisateur.Requetes;
 using FluentValidation;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
-using Microsoft.OpenApi.Models;
-using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
-using APIBoiteALivre.Filtre;
 
 
 
@@ -36,7 +36,19 @@ builder.Services.AddBLL(options => { });
 //ADD the DAL in the IOC
 builder.Services.AddDAL(options =>
 {
-    options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    //options.ConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    var server = Environment.GetEnvironmentVariable("DbServer");
+    var user = Environment.GetEnvironmentVariable("DbUser");
+    var password = Environment.GetEnvironmentVariable("DbPassWord");
+    var port = Environment.GetEnvironmentVariable("DbPort");
+
+    //Console.WriteLine($"DbServer: {server}, DbUser: {user}, DbPassWord: {password}, DbPort: {port}");
+
+    options.ConnectionString =
+       $"Server={server};Database=Boite a livre;Uid={user};Pwd={password};Charset=utf8;Port={port};SslMode=none";
+
+    Console.WriteLine($"ConnectionString: {options.ConnectionString}");
+
     Enum.TryParse(builder.Configuration.GetValue<string>("DBType"), out DBType dbType);
     options.DBType = dbType;
 });

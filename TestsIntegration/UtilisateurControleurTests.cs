@@ -3,10 +3,9 @@ using Domain.DTO.Utilisateur.Reponse;
 using Domain.DTO.Utilisateur.Reponses;
 using Domain.DTO.Utilisateur.Requetes;
 using Domain.Entites;
+using FluentAssertions;
 using System.Net;
 using System.Net.Http.Json;
-using FluentAssertions;
-
 using TestsIntegration.Fixtures;
 
 namespace TestsIntegration
@@ -28,7 +27,7 @@ namespace TestsIntegration
             await LogIn("psychospartiat@gmail.com", "bagaloo");
             // Act
             var response = await _client.GetAsync($"/APIBoiteALivre/books/{idExemplaire}?DateDebut={dateDebut:yyyy-MM-ddTHH:mm:ss}&DateFin={dateFin:yyyy-MM-ddTHH:mm:ss}");
-            response.EnsureSuccessStatusCode(); 
+            response.EnsureSuccessStatusCode();
 
             // Récupérer le contenu de la réponse
             var historique = await response.Content.ReadFromJsonAsync<IEnumerable<HistoriqueLivreReponseDTO>>();
@@ -50,14 +49,14 @@ namespace TestsIntegration
 
             // Act
             var response = await _client.GetAsync("/APIBoiteALivre/books");
-            response.EnsureSuccessStatusCode(); 
+            response.EnsureSuccessStatusCode();
 
             // Récupérer le contenu de la réponse
             var livres = await response.Content.ReadFromJsonAsync<IEnumerable<LivreReponseDTO>>();
 
             // Assert
             Assert.NotNull(livres);
-            Assert.NotEmpty(livres); 
+            Assert.NotEmpty(livres);
         }
 
         [Fact]
@@ -69,13 +68,13 @@ namespace TestsIntegration
 
             // Act
             var response = await _client.GetAsync("/APIBoiteALivre/utilisateurs");
-            response.EnsureSuccessStatusCode(); 
+            response.EnsureSuccessStatusCode();
 
             var utilisateurs = await response.Content.ReadFromJsonAsync<IEnumerable<Utilisateur>>();
 
             // Assert
             Assert.NotNull(utilisateurs);
-            Assert.NotEmpty(utilisateurs); 
+            Assert.NotEmpty(utilisateurs);
         }
 
         [Fact]
@@ -89,7 +88,7 @@ namespace TestsIntegration
             var response = await _client.PutAsync($"/APIBoiteALivre/utilisateurs/supprimer/{idUtilisateur}", null);
 
             // Assert
-            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode); 
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
 
         [Fact]
@@ -106,10 +105,10 @@ namespace TestsIntegration
             var response = await _client.PostAsJsonAsync("/APIBoiteALivre/authentification", authentificationRequete);
 
             // Assert
-            response.EnsureSuccessStatusCode(); 
+            response.EnsureSuccessStatusCode();
             var reponse = await response.Content.ReadFromJsonAsync<AuthentificationReponse>();
             Assert.NotNull(reponse);
-            Assert.False(string.IsNullOrEmpty(reponse.access_token)); 
+            Assert.False(string.IsNullOrEmpty(reponse.access_token));
         }
 
         [Fact]
@@ -137,7 +136,7 @@ namespace TestsIntegration
             var response = await _client.PostAsJsonAsync("/APIBoiteALivre/utilisateurs", ajoutUtilisateurRequete);
 
             // Assert
-            response.EnsureSuccessStatusCode(); 
+            response.EnsureSuccessStatusCode();
             var utilisateurAjoute = await response.Content.ReadFromJsonAsync<AjoutUtilisateurReponseDTO>();
             Assert.NotNull(utilisateurAjoute);
             Assert.Equal(ajoutUtilisateurRequete.EmailUtilisateur, utilisateurAjoute.EmailUtilisateur);
@@ -174,7 +173,7 @@ namespace TestsIntegration
             var response = await _client.PutAsJsonAsync<ModificationUtilisateurRequete>($"/APIBoiteALivre/utilisateurs/{idUtilisateur}", modificationUtilisateurRequete);
 
             // Assert
-            response.EnsureSuccessStatusCode(); 
+            response.EnsureSuccessStatusCode();
             var utilisateurModifie = await response.Content.ReadFromJsonAsync<ModificationUtilisateurReponseDTO>();
             Assert.NotNull(utilisateurModifie);
             Assert.Equal(modificationUtilisateurRequete.EmailUtilisateur, utilisateurModifie.EmailUtilisateur);
@@ -184,7 +183,7 @@ namespace TestsIntegration
         public async Task RecupererUtilisateurParId_IdValide_RetourneUtilisateur()
         {
             // Arrange
-            int idUtilisateur = 16; 
+            int idUtilisateur = 16;
             await LogIn("psychospartiat@gmail.com", "bagaloo");
             // Act
             var response = await _client.GetAsync($"/APIBoiteALivre/utilisateurs/{idUtilisateur}");
@@ -192,7 +191,7 @@ namespace TestsIntegration
             // Assert
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                
+
                 Assert.Fail($"User with ID {idUtilisateur} does not exist in the database.");
             }
             else
@@ -208,13 +207,13 @@ namespace TestsIntegration
         public async Task RecupererUtilisateurParId_IdInvalide_RetourneNotFound()
         {
             // Arrange
-            int idUtilisateurInvalide = 458; 
+            int idUtilisateurInvalide = 458;
             await LogIn("psychospartiat@gmail.com", "bagaloo");
             // Act
             var response = await _client.GetAsync($"/APIBoiteALivre/utilisateurs/{idUtilisateurInvalide}");
 
             // Assert
-            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode); 
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
     }

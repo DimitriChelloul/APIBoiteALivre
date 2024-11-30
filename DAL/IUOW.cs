@@ -24,7 +24,7 @@ namespace DAL
         IUtilisateurRepository Utilisateurs { get; }
         IHistoriqueRepository Historiques { get; }
 
-        ISecurityRepository Security {  get; }
+        ISecurityRepository Security { get; }
 
         #endregion
     }

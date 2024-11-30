@@ -1,11 +1,11 @@
-﻿using BLL.InterfacesService;
-using BLL.ImplementationsService;
+﻿using BLL.ImplementationsService;
+using BLL.InterfacesService;
 using DAL;
+using DAL.Repertoire.Interfaces;
 using Domain.Entites;
 using FluentAssertions;
-using Moq;
-using DAL.Repertoire.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Moq;
 
 
 namespace TestsUnitaire.TestUnitaires
@@ -53,5 +53,5 @@ namespace TestsUnitaire.TestUnitaires
         }
 
 
-    } 
+    }
 }

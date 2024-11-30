@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceManifest Name="APIBoiteALivrePkg"
+                 Version="1.0.0"
+                 xmlns="http://schemas.microsoft.com/2011/01/fabric"
+                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ServiceTypes>
+    <!-- Nom de votre ServiceType.
+         L'attribut UseImplicitHost indique qu'il s'agit d'un service d'invité. -->
+    <StatelessServiceType ServiceTypeName="APIBoiteALivreType" UseImplicitHost="true" />
+  </ServiceTypes>
+
+  <!-- Le package de code est votre exécutable de service. -->
+  <CodePackage Name="Code" Version="1.0.0">
+    <EntryPoint>
+      <!-- Suivez ce lien pour obtenir plus d'informations sur le déploiement de conteneurs Windows sur Service Fabric : https://aka.ms/sfguestcontainers -->
+      <ContainerHost>
+        <ImageName>apiboitealivre:dev</ImageName>
+      </ContainerHost>
+    </EntryPoint>
+    <!-- Passer les variables d'environnement à votre conteneur : -->
+    <!--
+    <EnvironmentVariables>
+      <EnvironmentVariable Name="VariableName" Value="VariableValue"/>
+    </EnvironmentVariables>
+    -->
+  </CodePackage>
+
+  <!-- Le package de configuration est le contenu du répertoire Config sous PackageRoot qui comprend
+       un ensemble versionné pouvant être mis à jour indépendamment des paramètres de configuration personnalisés de votre service. -->
+  <ConfigPackage Name="Config" Version="1.0.0" />
+
+  <Resources>
+    <Endpoints>
+      <!-- Ce point de terminaison est utilisé par l'écouteur de communications pour obtenir le port à
+           écouter. Notez que si votre service est partitionné, ce port est partagé avec
+           les réplicas des différentes partitions placées dans votre code. -->
+      <Endpoint Protocol="http" Name="APIBoiteALivreTypeEndpoint" Type="Input" Port="8640" />
+    </Endpoints>
+  </Resources>
+</ServiceManifest>

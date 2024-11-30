@@ -1,5 +1,4 @@
 ﻿using Domain.DTO.Historique.Reponse;
-using Domain.Entites;
 
 namespace BLL.InterfacesService
 {

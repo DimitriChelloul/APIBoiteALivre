@@ -87,13 +87,13 @@ namespace DAL.Repertoire.Implementations.MariaDB
             {
                 throw new SuppressionUtilisateurImpossible("Utilisateur", idUtilisateur);
             }
-            
+
         }
 
         //public async Task<Utilisateur> AuthentifierUtilisateurAsync(string email)
         //{
         //    string query = @"SELECT * FROM Utilisateur WHERE EmailUtilisateur = @Email AND EstSupprimer = 0;";
-           
+
         //   var utilisateur = await _session.Connection.QueryFirstOrDefaultAsync<Utilisateur>(query, new { Email = email});
 
         //    if(utilisateur == null)

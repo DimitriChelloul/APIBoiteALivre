@@ -1,12 +1,10 @@
 ﻿using BLL.InterfacesService;
-using Microsoft.AspNetCore.Mvc;
 using Domain.DTO.Historique.Reponse;
-using Microsoft.AspNetCore.Authorization;
 using Domain.DTO.Historique.Requetes;
-using Domain.DTO.Utilisateur.Requetes;
 using FluentValidation;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace APIBoiteALivre.Controllers
 {
@@ -19,7 +17,7 @@ namespace APIBoiteALivre.Controllers
         private readonly IHistoriqueService _historiqueService;
         private readonly IValidator<HistoriqueLivreDTORequete> _historiqueLivreDTORequete;
 
-        public HistoriqueControleur(ILogger<HistoriqueControleur> logger, IHistoriqueService historiqueService,  IValidator<HistoriqueLivreDTORequete> historiqueLivreDTORequete)
+        public HistoriqueControleur(ILogger<HistoriqueControleur> logger, IHistoriqueService historiqueService, IValidator<HistoriqueLivreDTORequete> historiqueLivreDTORequete)
         {
             _logger = logger;
             _historiqueService = historiqueService;
@@ -31,7 +29,7 @@ namespace APIBoiteALivre.Controllers
 
         [HttpGet("books/{idExemplaire}")]
         [Authorize]
-        public async Task<IActionResult> RecupHistoriqueExemplaire([FromRoute] int idExemplaire, [FromQuery] DateTime dateDebut, [FromQuery] DateTime dateFin,  HistoriqueLivreDTORequeteValidateur _validator)
+        public async Task<IActionResult> RecupHistoriqueExemplaire([FromRoute] int idExemplaire, [FromQuery] DateTime dateDebut, [FromQuery] DateTime dateFin, HistoriqueLivreDTORequeteValidateur _validator)
         {
 
             var requete = new HistoriqueLivreDTORequete
